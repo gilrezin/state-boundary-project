@@ -5,10 +5,30 @@ using TestForHugProject;
 public class App {
     public static Pixel[,]? World;
 
-    public static void Main() {
 
-        int xSize = 1000;
-        int ySize = 1000;
+
+
+    public static void Main() {
+        string str = "";
+
+        World = GenerateWorld(1000, 1000, 20, 60);
+
+        for (int x = 0; x < 1000; x++) {
+            for (int y = 0; y < 1000; y++) {
+                if (World[x, y].ElevationPercentage > 0) {
+                    str += " 0 ";
+
+                }
+                else
+                    str += " - ";
+            }
+            Console.WriteLine(str);
+            str = "";
+        }
+
+    }
+    public static Pixel[,] GenerateWorld(int xSize, int ySize, int MinimumNumberOfCirlces, int MaximumNumberOfCirlces) {
+
 
         int smoothSquareLength = new Random().Next(7, 52);
 
@@ -18,9 +38,8 @@ public class App {
         int minimumCentreY = (int)Math.Round(xSize * -0.1);
         int maximumCentreY = (int)Math.Round(xSize * 1.1);
 
-        int numberOfCenters = 50;
+        int numberOfCenters = new Random().Next(MinimumNumberOfCirlces, MaximumNumberOfCirlces);
 
-        World = new Pixel[xSize, ySize];
 
         int[,] centers = new int[numberOfCenters, 2];
 
@@ -85,15 +104,13 @@ public class App {
 
 
         double average = total / count;
-        // System.out.println(total);
-        // System.out.println(count);
-        // System.out.println(average);
+
         Console.WriteLine("Number of centers: " + numberOfCenters);
         Console.WriteLine("Smooth Radius Check: " + smoothSquareLength);
         Console.WriteLine("Maximum Value: " + maxValue);
         Console.WriteLine("Minimum Value: " + minValue);
 
-
+        Pixel[,] pixelArray = new Pixel[xSize, ySize];
         double[,] percentageData = new double[xSize, ySize];
         for (int x = 0; x < xSize; x++) {
             for (int y = 0; y < ySize; y++) {
@@ -104,27 +121,15 @@ public class App {
                 else
                     percentageData[x, y] = (averagedData[x, y] - average) / (minValue - average)*-1;
 
-                World[x,y] = new Pixel(percentageData[x, y], 0, 0, 0, "", new int[] { x, y });
+                pixelArray[x,y] = new Pixel(percentageData[x, y], 0, 0, 0, "", new int[] { x, y });
             }
         }
 
+    
 
-        string str = "";
-        //for (int x = 0; x < xSize; x++) {
-        //    for (int y = 0; y < ySize; y++) {
-        //        if (smoothData[x, y] == 1) {
-        //            str += " 0 ";
 
-        //        }
-        //        else
-        //            str += " - ";
-        //    }
-        //    Console.WriteLine(str);
-        //    str = "";
-        //}
-
-        Console.WriteLine(str);
-        return;
+     
+        return pixelArray;
     }
     public static double randdouble(double max) {
         Random random = new Random();
