@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TestForHugProject;
 using UnityEngine;
 
 public class Drawing : MonoBehaviour
@@ -9,106 +10,11 @@ public class Drawing : MonoBehaviour
     public int xSize = 86;
     public int ySize = 176;
     public int numberOfCenters = 20;
+    public Pixel[,] world;
      void Start()
     {
 
-        int smoothSquareLength = new System.Random().Next(7, 52);
-
-        int minimumCentreX = (int)Math.Round(xSize * -0.1);
-        int maximumCentreX = (int)Math.Round(xSize * 1.1);
-
-        int minimumCentreY = (int)Math.Round(xSize * -0.1);
-        int maximumCentreY = (int)Math.Round(xSize * 1.1);
-
-        int[,] centers = new int[numberOfCenters, 2];
-
-        for (int i = 0; i < numberOfCenters; i++)
-        {
-            centers[i, 0] = randint(maximumCentreX);
-            centers[i, 1] = randint(maximumCentreY);
-        }
-
-
-
-        double valueLimitPercentage = 100d;
-        double[,] data = new double[xSize, ySize];
-        for (int x = 0; x < xSize; x++)
-        {
-            for (int y = 0; y < ySize; y++)
-            {
-                List<Double> list = new List<Double>();
-                for (int i = 0; i < (centers.Length)/2; i++)
-                {
-
-                    list.Add(Math.Sqrt(Math.Pow(centers[i, 0] - 1 - x, 2) + Math.Pow(centers[i, 1] - 1 - y, 2)));
-                }
-                list.Sort();
-                double weightedAverageDistanceFromCenter = list[0];
-                data[x, y] = (randdouble(1) * (weightedAverageDistanceFromCenter / 2));
-            }
-        }
-
-
-
-
-        double total = 0;
-        int count = xSize * ySize;
-        for (int x = 0; x < xSize; x++)
-        {
-            for (int y = 0; y < ySize; y++)
-            {
-                total = total + data[x, y];
-            }
-        }
-
-
-
-
-        double[,] averagedData = new double[xSize, ySize];
-        for (int x = 0; x < xSize; x++)
-        {
-            for (int y = 0; y < ySize; y++)
-            {
-                double a = 0;
-                int c = 0;
-                for (int xOffset = smoothSquareLength * -1; xOffset <= smoothSquareLength; xOffset++)
-                {
-                    for (int yOffset = smoothSquareLength * -1; yOffset <= smoothSquareLength; yOffset++)
-                    {
-                        if (x + xOffset <= (xSize - 1) && y + yOffset <= (ySize - 1) && x + xOffset >= 0 && y + yOffset >= 0)
-                        {
-                            a += data[x + xOffset, y + yOffset];
-                            c++;
-                        }
-                    }
-                }
-                averagedData[x, y] = a / c;
-            }
-        }
-
-
-
-        double average = total / count;
-        // System.out.println(total);
-        // System.out.println(count);
-        // System.out.println(average);
-        Debug.Log("Number of centers: " + numberOfCenters);
-        Debug.Log("Smooth Radius Check: " + smoothSquareLength);
-        // Step 1: Create our heat map chart using our data.
-
-        double[,] smoothData = new double[xSize, ySize];
-        for (int x = 0; x < xSize; x++)
-        {
-            for (int y = 0; y < ySize; y++)
-            {
-                if (averagedData[x, y] > (average * (valueLimitPercentage / 100)))
-                {
-                    smoothData[x, y] = 0;
-
-                }
-                else smoothData[x, y] = 1;
-            }
-        }
+        world = App.GenerateWorld(xSize, ySize, 20, 60);
 
 
         string str = "";
@@ -118,7 +24,7 @@ public class Drawing : MonoBehaviour
         {
             for (int y = 0; y < ySize; y++)
             {
-                if (smoothData[x, y] == 1)
+                if (world[x, y].ElevationPercentage < 0)
                 {
                     str += " 0 ";
                     transform.position = new Vector3(transform.position.x + 0.1f, transform.position.y, 0);
