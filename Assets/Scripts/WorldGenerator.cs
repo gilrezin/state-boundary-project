@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TestForHugProject;
 
-public class App {
+public class WorldGenerator {
     public static Pixel[,]? World;
 
     public static Pixel[,] GenerateWorld(int xSize, int ySize, int MinimumNumberOfCirlces, int MaximumNumberOfCirlces) {

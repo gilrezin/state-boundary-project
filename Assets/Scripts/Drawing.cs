@@ -16,7 +16,7 @@ public class Drawing : MonoBehaviour
         int xSize = 86;
         int ySize = 176;
         
-        world = App.GenerateWorld((int) (xSize*scaleFactor), (int) (ySize*scaleFactor), minimumNumberOfCircles, maximumNumberOfCircles);
+        world = WorldGenerator.GenerateWorld((int) (xSize*scaleFactor), (int) (ySize*scaleFactor), minimumNumberOfCircles, maximumNumberOfCircles);
 
 
         Debug.Log(xSize + " " + ySize);

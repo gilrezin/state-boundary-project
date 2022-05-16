@@ -4,16 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestForHugProject
+class Ethnicity
 {
-    class Ethnicity
+    public string id;
+    public string name;
+    public Ethnicity(string name)
     {
-        public string id;
-        public string name;
-        public Ethnicity(string name)
-        {
-            id = Guid.NewGuid().ToString();
-            this.name = name;
-        }
+        id = Guid.NewGuid().ToString();
+        this.name = name;
     }
 }

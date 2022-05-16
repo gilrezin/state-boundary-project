@@ -8,7 +8,6 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Debug.Log("this is a test");
-        //App.Main();
     }
 
     // Update is called once per frame
