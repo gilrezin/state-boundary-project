@@ -5,28 +5,6 @@ using TestForHugProject;
 public class App {
     public static Pixel[,]? World;
 
-
-
-
-    public static void Main() {
-        string str = "";
-
-        World = GenerateWorld(1000, 1000, 20, 60);
-
-        for (int x = 0; x < 1000; x++) {
-            for (int y = 0; y < 1000; y++) {
-                if (World[x, y].ElevationPercentage > 0) {
-                    str += " 0 ";
-
-                }
-                else
-                    str += " - ";
-            }
-            Console.WriteLine(str);
-            str = "";
-        }
-
-    }
     public static Pixel[,] GenerateWorld(int xSize, int ySize, int MinimumNumberOfCirlces, int MaximumNumberOfCirlces) {
 
 
@@ -35,8 +13,8 @@ public class App {
         int minimumCentreX = (int)Math.Round(xSize * -0.1);
         int maximumCentreX = (int)Math.Round(xSize * 1.1);
 
-        int minimumCentreY = (int)Math.Round(xSize * -0.1);
-        int maximumCentreY = (int)Math.Round(xSize * 1.1);
+        int minimumCentreY = (int)Math.Round(ySize * -0.1);
+        int maximumCentreY = (int)Math.Round(ySize * 1.1);
 
         int numberOfCenters = new Random().Next(MinimumNumberOfCirlces, MaximumNumberOfCirlces);
 
@@ -131,6 +109,7 @@ public class App {
      
         return pixelArray;
     }
+
     public static double randdouble(double max) {
         Random random = new Random();
         return (max + .0000000001) * random.NextDouble();

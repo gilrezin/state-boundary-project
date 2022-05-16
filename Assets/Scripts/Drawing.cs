@@ -7,43 +7,44 @@ public class Drawing : MonoBehaviour
 {
     public GameObject pixel;
     public GameObject instantiatedPixel;
-    public int xSize = 86;
-    public int ySize = 176;
-    public int numberOfCenters = 20;
     public Pixel[,] world;
-     void Start()
+    public double scaleFactor = 3;
+    public int minimumNumberOfCircles = 10;
+    public int maximumNumberOfCircles = 40;
+    void Start()
     {
+        int xSize = 86;
+        int ySize = 176;
+        
+        world = App.GenerateWorld((int) (xSize*scaleFactor), (int) (ySize*scaleFactor), minimumNumberOfCircles, maximumNumberOfCircles);
 
-        world = App.GenerateWorld(xSize, ySize, 20, 60);
 
-
-        string str = "";
         Debug.Log(xSize + " " + ySize);
         transform.position = new Vector3(-8.8f, 4.9f, 0);
-        for (int x = 0; x < xSize; x++)
+        for (int x = 0; x < xSize * scaleFactor; x++)
         {
-            for (int y = 0; y < ySize; y++)
+            Debug.Log("test");
+
+            for (int y = 0; y < ySize * scaleFactor; y++)
             {
-                if (world[x, y].ElevationPercentage < 0)
+                Debug.Log("test");
+                if (world[x, y].ElevationPercentage >= 0)
                 {
-                    str += " 0 ";
-                    transform.position = new Vector3(transform.position.x + 0.1f, transform.position.y, 0);
+                    Debug.Log(world[x, y].ElevationPercentage + " ");
+                    transform.position = new Vector3(transform.position.x + 0.1f / (float) scaleFactor, transform.position.y, 0);
 
                 }
                 else 
                 {
-                    str += " - ";
-                    transform.position = new Vector3(transform.position.x + 0.1f, transform.position.y, 0);
+                    transform.position = new Vector3(transform.position.x + 0.1f / (float) scaleFactor, transform.position.y, 0);
                     instantiatedPixel = (GameObject) Instantiate(pixel, transform.position, Quaternion.identity);
                     instantiatedPixel.name = y + " " + x;
-                    
                 }
             }
-            str += "\n";
-            transform.position = new Vector3(-8.8f, transform.position.y - 0.1f, 0);
+
+            transform.position = new Vector3(-8.8f, transform.position.y - 0.1f / (float) scaleFactor, 0);
             //Debug.Log("new line " + x);
         }
-        //Debug.Log(str);
         return;
     }
     public static double randdouble(double max)
