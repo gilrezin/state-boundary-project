@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using TestForHugProject;
 
 public class WorldGenerator {
-    public static Pixel[,]? World;
-
-    public static Pixel[,] GenerateWorld(int xSize, int ySize, int MinimumNumberOfCirlces, int MaximumNumberOfCirlces) {
-
-
+    public static Pixel[,] World;
+    public static double[,] GeneratePercentageArray(int xSize, int ySize, int MinimumNumberOfCircles, int MaximumNumberOfCircles, double AveragePercentageOffset) {
         int smoothSquareLength = new Random().Next(7, 52);
 
         int minimumCentreX = (int)Math.Round(xSize * -0.1);
@@ -16,14 +12,14 @@ public class WorldGenerator {
         int minimumCentreY = (int)Math.Round(ySize * -0.1);
         int maximumCentreY = (int)Math.Round(ySize * 1.1);
 
-        int numberOfCenters = new Random().Next(MinimumNumberOfCirlces, MaximumNumberOfCirlces);
+        int numberOfCenters = new Random().Next(MinimumNumberOfCircles, MaximumNumberOfCircles);
 
 
         int[,] centers = new int[numberOfCenters, 2];
 
         for (int i = 0; i < numberOfCenters; i++) {
-            centers[i, 0] = randint(maximumCentreX);
-            centers[i, 1] = randint(maximumCentreY);
+            centers[i, 0] = new Random().Next(minimumCentreX, maximumCentreX);
+            centers[i, 1] = new Random().Next(minimumCentreY,maximumCentreY);
         }
 
 
@@ -31,14 +27,14 @@ public class WorldGenerator {
         double[,] data = new double[xSize, ySize];
         for (int x = 0; x < xSize; x++) {
             for (int y = 0; y < ySize; y++) {
-                List<Double> list = new List<Double>();
+                List<Double> list = new();
                 for (int i = 0; i < (centers.Length) / 2; i++) {
 
                     list.Add(Math.Sqrt(Math.Pow(centers[i, 0] - 1 - x, 2) + Math.Pow(centers[i, 1] - 1 - y, 2)));
                 }
                 list.Sort();
                 double weightedAverageDistanceFromCenter = list[0];
-                data[x, y] = (randdouble(1) * (weightedAverageDistanceFromCenter / 2));
+                data[x, y] = (new Random().NextDouble() * (weightedAverageDistanceFromCenter / 2));
             }
         }
 
@@ -79,57 +75,59 @@ public class WorldGenerator {
             }
         }
 
-
-
         double average = total / count;
 
-        Console.WriteLine("Number of centers: " + numberOfCenters);
-        Console.WriteLine("Smooth Radius Check: " + smoothSquareLength);
-        Console.WriteLine("Maximum Value: " + maxValue);
-        Console.WriteLine("Minimum Value: " + minValue);
 
-        Pixel[,] pixelArray = new Pixel[xSize, ySize];
         double[,] percentageData = new double[xSize, ySize];
         for (int x = 0; x < xSize; x++) {
             for (int y = 0; y < ySize; y++) {
-                if (averagedData[x, y] >= average) {
-                    percentageData[x, y] = (averagedData[x, y] - average) / (maxValue - average);
+                if (averagedData[x, y] <= average) {
+                    percentageData[x, y] = (averagedData[x, y] - average * AveragePercentageOffset) / (maxValue - average * AveragePercentageOffset);
 
                 }
                 else
-                    percentageData[x, y] = (averagedData[x, y] - average) / (minValue - average)*-1;
-
-                pixelArray[x,y] = new Pixel(percentageData[x, y], 0, 0, 0, "", new int[] { x, y });
+                    percentageData[x, y] = (averagedData[x, y] - average * AveragePercentageOffset) / (minValue - average * AveragePercentageOffset) * -1;
             }
         }
 
-    
+        return percentageData;
+    }
+
+    public static Pixel[,] GenerateWorld(int xSize, int ySize, int MinimumNumberOfCircles, int MaximumNumberOfCircles) {
 
 
-     
+
+        Pixel[,] pixelArray = new Pixel[xSize, ySize];
+        double[,] landPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, 1.1d);
+        double[,] oilPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, 1.8d);
+        double[,] goldPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, 1.8d);
+        double[,] woodPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, 1.3d);
+        double[,] ethnicityPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, 1d);
+        for (int x = 0; x < xSize; x++) {
+            for (int y = 0; y < ySize; y++) {
+                double pixelWoodCover;
+                if (landPercentageData[x, y] < 0)
+                    pixelWoodCover = -1;
+                else
+                    pixelWoodCover = woodPercentageData[x, y];
+                string ethnityID;
+                if (-1 <= ethnicityPercentageData[x, y] && ethnicityPercentageData[x, y] < -.6) 
+                    ethnityID = "a";
+                else if (-.6 <= ethnicityPercentageData[x, y] && ethnicityPercentageData[x, y] < -.2)
+                    ethnityID = "b";
+                else if (-.2 <= ethnicityPercentageData[x, y] && ethnicityPercentageData[x, y] < .2)
+                    ethnityID = "c";
+                else if (.2 <= ethnicityPercentageData[x, y] && ethnicityPercentageData[x, y] < .6)
+                    ethnityID = "d";
+                else
+                    ethnityID = "e";
+
+                pixelArray[x, y] = new Pixel(landPercentageData[x, y], oilPercentageData[x,y], goldPercentageData[x,y], pixelWoodCover, ethnityID, new int[] { x, y });
+
+            }
+        }
+
         return pixelArray;
     }
 
-    public static double randdouble(double max) {
-        Random random = new Random();
-        return (max + .0000000001) * random.NextDouble();
-    }
-    public static int randint(int max) {
-        Random random = new Random();
-        return random.Next(max + 1);
-    }
-
-    static bool noDropRNG(double percentChance, int rolls) {
-        for (int x = rolls; x != 0; x--) {
-            Random random = new Random();
-
-            double randomNum = random.NextDouble();// Get a Random  value from 0.00 - 1.00
-            double adjustedPercentChance = percentChance;
-
-            if (randomNum <= adjustedPercentChance / 100) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
