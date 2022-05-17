@@ -412,7 +412,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pixel: {fileID: 5670699197539425755, guid: e9862a072264f1c4fb5b4d31dadd842d, type: 3}
   instantiatedPixel: {fileID: 0}
-  scaleFactor: 3
+  scaleFactor: 1.5
   minimumNumberOfCircles: 10
   maximumNumberOfCircles: 20
 --- !u!4 &376277566
