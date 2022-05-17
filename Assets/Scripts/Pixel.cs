@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
-
-
-public class Pixel {
+public class  Pixel : MonoBehaviour {
     public double ElevationPercentage;
 
     public int[] Coordinate = new int[2];
