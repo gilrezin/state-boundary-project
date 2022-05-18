@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class  Pixel : MonoBehaviour {
+public class Pixel {
     public double ElevationPercentage;
 
     public int[] Coordinate = new int[2];

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 public class WorldGenerator {
-    public static Pixel[,] World;
+    //public static Pixel[,] World;
     public static double[,] GeneratePercentageArray(int xSize, int ySize, int MinimumNumberOfCircles, int MaximumNumberOfCircles, double AveragePercentageOffset) {
         int smoothSquareLength = new Random().Next(7, 52);
 

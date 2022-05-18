@@ -26,7 +26,8 @@ public class DisplayMap : MonoBehaviour {
                 else {
                     transform.position = new Vector3(transform.position.x + 0.1f / (float)scaleFactor, transform.position.y, 0);
                     instantiatedPixel = (GameObject)Instantiate(pixel, transform.position, Quaternion.identity);
-                    instantiatedPixel.name = y + ", " + x;
+                    instantiatedPixel.name = x + ", " + y;
+                    instantiatedPixel.AddComponent<PixelBehavior>();
                 }
             }
 
