@@ -3,8 +3,7 @@ using System.Collections.Generic;
 
 public class WorldGenerator {
     public static Pixel[,] World;
-    public static double[,] GeneratePercentageArray(int xSize, int ySize, int MinimumNumberOfCircles, int MaximumNumberOfCircles, double AveragePercentageOffset) {
-        int smoothSquareLength = new Random().Next(7, 52);
+    public static double[,] GeneratePercentageArray(int xSize, int ySize, int MinimumNumberOfCircles, int MaximumNumberOfCircles, int smoothSquareLength,  double AveragePercentageOffset) {
 
         int minimumCentreX = (int)Math.Round(xSize * -0.1);
         int maximumCentreX = (int)Math.Round(xSize * 1.1);
@@ -98,11 +97,11 @@ public class WorldGenerator {
 
 
         Pixel[,] pixelArray = new Pixel[xSize, ySize];
-        double[,] landPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, 1.1d);
-        double[,] oilPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, 1.8d);
-        double[,] goldPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, 1.8d);
-        double[,] woodPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, 1.3d);
-        double[,] ethnicityPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, 1d);
+        double[,] landPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, new Random().Next(7, 52), 1.1d);
+        double[,] oilPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles*40, MaximumNumberOfCircles * 40, new Random().Next(1, 20), .1d);
+        double[,] goldPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles * 40, MaximumNumberOfCircles * 40, new Random().Next(1, 20), .1d);
+        double[,] woodPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, new Random().Next(5, 40), 1.3d);
+        double[,] ethnicityPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, new Random().Next(10, 30), 1d);
         for (int x = 0; x < xSize; x++) {
             for (int y = 0; y < ySize; y++) {
                 double pixelWoodCover;

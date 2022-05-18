@@ -37,7 +37,8 @@ public class  Pixel {
             IsSelected = true;
     }
 
-    public Color32 GetLandColor() {
+    public Color GetLandColor() {
+       
         if (ElevationPercentage < .2)
             return new Color32(116, 183, 49, 255);
         else if (.2 <= ElevationPercentage && ElevationPercentage < .4)
@@ -49,4 +50,46 @@ public class  Pixel {
         else
             return new Color32(145, 187, 150, 255);
     }
+
+    public Color32 GetOilColor() {
+        if (OilResourcePercentage < .2)
+            return Color.white;
+        else if (.2 <= OilResourcePercentage && OilResourcePercentage < .4)
+            return new Color32(78, 122, 36, 255);
+        else if (.4 <= OilResourcePercentage && OilResourcePercentage < .6)
+            return new Color32(96, 186, 100, 255);
+        else if (.6 <= OilResourcePercentage && OilResourcePercentage < .8)
+            return new Color32(96, 122, 100, 255);
+        else
+            return new Color32(145, 187, 150, 255);
+    }
+
+    public Color32 GetGoldColor() {
+        if (GoldResorucePercentage < .2)
+            return Color.white;
+        else if (.4 <= GoldResorucePercentage && GoldResorucePercentage < .4)
+            return new Color32(78, 122, 36, 255);
+        else if (.4 <= GoldResorucePercentage && GoldResorucePercentage < .6)
+            return new Color32(96, 186, 100, 255);
+        else if (.6 <= GoldResorucePercentage && GoldResorucePercentage < .8)
+            return new Color32(96, 122, 100, 255);
+        else
+            return new Color32(145, 187, 150, 255);
+    }
+
+    public Color32 GetWoodColor() {
+        if (WoodResorucePercentage < .2)
+            return Color.white;
+        else if (.2 <= WoodResorucePercentage && WoodResorucePercentage < .36)
+            return new Color32(78, 122, 36, 255);
+        else if (.36 <= WoodResorucePercentage && WoodResorucePercentage < .52)
+            return new Color32(96, 186, 100, 255);
+        else if (.52 <= WoodResorucePercentage && WoodResorucePercentage < .68)
+            return new Color32(96, 122, 100, 255);
+        else if (.68 <= WoodResorucePercentage && WoodResorucePercentage < .84)
+            return new Color32(96, 122, 100, 255);
+        else
+            return new Color32(145, 187, 150, 255);
+    }
+    
 }
