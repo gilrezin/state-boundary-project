@@ -6,9 +6,9 @@ public class DisplayMap : MonoBehaviour {
     public GameObject pixel;
     public GameObject instantiatedPixel;
     public Pixel[,] world;
-    public double scaleFactor = 3;
-    public int minimumNumberOfCircles = 70;
-    public int maximumNumberOfCircles = 87;
+    public double scaleFactor = 1.5;
+    public int minimumNumberOfCircles = 35;
+    public int maximumNumberOfCircles = 44;
     void Start() {
         int xSize = 86;
         int ySize = 176;
@@ -19,15 +19,17 @@ public class DisplayMap : MonoBehaviour {
         for (int x = 0; x < xSize * scaleFactor; x++) {
 
             for (int y = 0; y < ySize * scaleFactor; y++) {
-                if (world[x, y].ElevationPercentage >= 0) {
+                Pixel pixelData = world[x, y];
+                if (pixelData.ElevationPercentage <= 0) {
                     transform.position = new Vector3(transform.position.x + 0.1f / (float)scaleFactor, transform.position.y, 0);
 
                 }
                 else {
                     transform.position = new Vector3(transform.position.x + 0.1f / (float)scaleFactor, transform.position.y, 0);
                     instantiatedPixel = (GameObject)Instantiate(pixel, transform.position, Quaternion.identity);
-                    instantiatedPixel.name = x + ", " + y;
-                    instantiatedPixel.AddComponent<PixelBehavior>();
+                    instantiatedPixel.GetComponent<SpriteRenderer>().color = pixelData.GetLandColor();
+                    instantiatedPixel.name = y + ", " + x;
+                    
                 }
             }
 

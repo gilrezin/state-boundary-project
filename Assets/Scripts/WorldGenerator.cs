@@ -82,11 +82,11 @@ public class WorldGenerator {
         for (int x = 0; x < xSize; x++) {
             for (int y = 0; y < ySize; y++) {
                 if (averagedData[x, y] <= average) {
-                    percentageData[x, y] = (averagedData[x, y] - average * AveragePercentageOffset) / (maxValue - average * AveragePercentageOffset);
+                    percentageData[x, y] = (averagedData[x, y] - average * AveragePercentageOffset) / (maxValue - average * AveragePercentageOffset)* -1;
 
                 }
                 else
-                    percentageData[x, y] = (averagedData[x, y] - average * AveragePercentageOffset) / (minValue - average * AveragePercentageOffset) * -1;
+                    percentageData[x, y] = (averagedData[x, y] - average * AveragePercentageOffset) / (minValue - average * AveragePercentageOffset);
             }
         }
 
@@ -121,7 +121,7 @@ public class WorldGenerator {
                     ethnityID = "d";
                 else
                     ethnityID = "e";
-
+                
                 pixelArray[x, y] = new Pixel(landPercentageData[x, y], oilPercentageData[x,y], goldPercentageData[x,y], pixelWoodCover, ethnityID, new int[] { x, y });
 
             }

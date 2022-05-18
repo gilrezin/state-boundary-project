@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour {
     // Start is called before the first frame update
+    public Button toggleEthnicityButton;
     void Start() {
 
     }
