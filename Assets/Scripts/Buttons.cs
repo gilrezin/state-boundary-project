@@ -7,31 +7,35 @@ public class Buttons : MonoBehaviour {
     public DisplayMap displayMap;
     public void OnEthnicityButtonPress() {
         Debug.Log("test");
-        displayMap.displayEthnicityColor();
+        displayMap.DisplayEthnicityColor();
     }
 
     public void OnOilButtonPress() {
         Debug.Log("test");
-        displayMap.displayOilColor();
+        displayMap.DisplayOilColor();
     }
 
     public void OnGoldButtonPress() {
         Debug.Log("test");
-        displayMap.displayGoldColor();
+        displayMap.DisplayGoldColor();
     }
 
     public void OnWoodButtonPress() {
         Debug.Log("test");
-        displayMap.displayWoodColor();
+        displayMap.DisplayWoodColor();
     }
 
     public void OnLandButtonPress() {
         Debug.Log("test");
-        displayMap.displayLandColor();
+        displayMap.DisplayLandColor();
     }
 
     public void ReloadScene() {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void OnClearButtonPress() {
+        displayMap.ClearSelection();
     }
 
 }

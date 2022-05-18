@@ -3,7 +3,10 @@ guid: d6612188ed8840a489fd78891264f3fb
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - pixel: {instanceID: 0}
+  - instantiatedPixel: {instanceID: 0}
+  - CurrentViewText: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

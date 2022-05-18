@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DisplayMap : MonoBehaviour {
     public GameObject pixel;
     public GameObject instantiatedPixel;
     public GameObject[,] pixelArray;
-    public Pixel[,] world;
+    public GameObject CurrentViewText;
+    
+    //public Pixel[,] world;
     public double scaleFactor = 1.5;
     public int minimumNumberOfCircles = 35;
     public int maximumNumberOfCircles = 44;
@@ -16,14 +16,14 @@ public class DisplayMap : MonoBehaviour {
     void Start() {
         
 
-        world = WorldGenerator.GenerateWorld((int)(xSize * scaleFactor), (int)(ySize * scaleFactor), minimumNumberOfCircles, maximumNumberOfCircles);
+        World.world = WorldGenerator.GenerateWorld((int)(xSize * scaleFactor), (int)(ySize * scaleFactor), minimumNumberOfCircles, maximumNumberOfCircles);
         pixelArray = new GameObject[(int)(xSize * scaleFactor), (int)(ySize* scaleFactor)];
 
         transform.position = new Vector3(-8.8f, 4.9f, 0);
         for (int x = 0; x < xSize * scaleFactor; x++) {
 
             for (int y = 0; y < ySize * scaleFactor; y++) {
-                Pixel pixelData = world[x, y];
+                Pixel pixelData = World.world[x, y];
                 if (pixelData.ElevationPercentage <= 0) {
                     transform.position = new Vector3(transform.position.x + 0.1f / (float)scaleFactor, transform.position.y, 0);
                     pixelArray[x, y] = null;
@@ -34,6 +34,8 @@ public class DisplayMap : MonoBehaviour {
                     instantiatedPixel = (GameObject)Instantiate(pixel, transform.position, Quaternion.identity);
                     instantiatedPixel.GetComponent<SpriteRenderer>().color = pixelData.GetLandColor();
                     instantiatedPixel.AddComponent<PixelBehavior>();
+                    instantiatedPixel.GetComponent<PixelBehavior>().x = x;
+                    instantiatedPixel.GetComponent<PixelBehavior>().y = y;
                     instantiatedPixel.name = y + ", " + x;
 
                     pixelArray[x, y] = instantiatedPixel;
@@ -45,23 +47,23 @@ public class DisplayMap : MonoBehaviour {
         return;
     }
     
-    public void displayEthnicityColor() {
+    public void DisplayEthnicityColor() {
         for (int x = 0; x < xSize * scaleFactor; x++) {
             for (int y = 0; y < ySize * scaleFactor; y++) {
                 GameObject pixel = pixelArray[x,y];
-                Pixel pixelData = world[x, y];
+                Pixel pixelData = World.world[x, y];
                 if (pixel == null) continue;
 
-                pixel.GetComponent<SpriteRenderer>().color = Color.blue;
+                pixel.GetComponent<SpriteRenderer>().color = pixelData.GetEthnicityColor();
             }
         }
     }
 
-    public void displayLandColor() {
+    public void DisplayLandColor() {
         for (int x = 0; x < xSize * scaleFactor; x++) {
             for (int y = 0; y < ySize * scaleFactor; y++) {
                 GameObject pixel = pixelArray[x, y];
-                Pixel pixelData = world[x, y];
+                Pixel pixelData = World.world[x, y];
                 if (pixel == null)
                     continue;
 
@@ -70,11 +72,11 @@ public class DisplayMap : MonoBehaviour {
         }
     }
 
-    public void displayOilColor() {
+    public void DisplayOilColor() {
         for (int x = 0; x < xSize * scaleFactor; x++) {
             for (int y = 0; y < ySize * scaleFactor; y++) {
                 GameObject pixel = pixelArray[x, y];
-                Pixel pixelData = world[x, y];
+                Pixel pixelData = World.world[x, y];
                 if (pixel == null)
                     continue;
 
@@ -83,11 +85,11 @@ public class DisplayMap : MonoBehaviour {
         }
     }
 
-    public void displayGoldColor() {
+    public void DisplayGoldColor() {
         for (int x = 0; x < xSize * scaleFactor; x++) {
             for (int y = 0; y < ySize * scaleFactor; y++) {
                 GameObject pixel = pixelArray[x, y];
-                Pixel pixelData = world[x, y];
+                Pixel pixelData = World.world[x, y];
                 if (pixel == null)
                     continue;
 
@@ -96,15 +98,28 @@ public class DisplayMap : MonoBehaviour {
         }
     }
 
-    public void displayWoodColor() {
+    public void DisplayWoodColor() {
         for (int x = 0; x < xSize * scaleFactor; x++) {
             for (int y = 0; y < ySize * scaleFactor; y++) {
                 GameObject pixel = pixelArray[x, y];
-                Pixel pixelData = world[x, y];
+                Pixel pixelData = World.world[x, y];
                 if (pixel == null)
                     continue;
 
                 pixel.GetComponent<SpriteRenderer>().color = pixelData.GetWoodColor();
+            }
+        }
+    }
+
+    public void ClearSelection() {
+        for (int x = 0; x < xSize * scaleFactor; x++) {
+            for (int y = 0; y < ySize * scaleFactor; y++) {
+                GameObject pixel = pixelArray[x, y];
+                Pixel pixelData = World.world[x, y];
+                if (pixel == null)
+                    continue;
+                pixelData.IsSelected = false;
+                pixel.GetComponent<SpriteRenderer>().color = pixelData.GetLandColor();
             }
         }
     }

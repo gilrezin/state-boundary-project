@@ -38,7 +38,9 @@ public class  Pixel {
     }
 
     public Color GetLandColor() {
-       
+        if (IsSelected == true)
+            return GetSelectedColor();
+
         if (ElevationPercentage < .2)
             return new Color32(116, 183, 49, 255);
         else if (.2 <= ElevationPercentage && ElevationPercentage < .4)
@@ -52,6 +54,9 @@ public class  Pixel {
     }
 
     public Color32 GetOilColor() {
+        if (IsSelected == true)
+            return GetSelectedColor();
+
         if (OilResourcePercentage < .2)
             return Color.white;
         else if (.2 <= OilResourcePercentage && OilResourcePercentage < .4)
@@ -65,6 +70,9 @@ public class  Pixel {
     }
 
     public Color32 GetGoldColor() {
+        if (IsSelected == true)
+            return GetSelectedColor();
+
         if (GoldResorucePercentage < .2)
             return Color.white;
         else if (.4 <= GoldResorucePercentage && GoldResorucePercentage < .4)
@@ -78,6 +86,9 @@ public class  Pixel {
     }
 
     public Color32 GetWoodColor() {
+        if (IsSelected == true)
+            return GetSelectedColor();
+
         if (WoodResorucePercentage < .2)
             return Color.white;
         else if (.2 <= WoodResorucePercentage && WoodResorucePercentage < .36)
@@ -91,5 +102,26 @@ public class  Pixel {
         else
             return new Color32(145, 187, 150, 255);
     }
-    
+
+    public Color32 GetEthnicityColor() {
+        if (IsSelected == true)
+            return GetSelectedColor();
+
+        if (EthinictyID.Equals("a"))
+            return Color.cyan;
+        else if(EthinictyID.Equals("b"))
+            return Color.magenta;
+        else if(EthinictyID.Equals("c"))
+            return Color.gray;
+        else if(EthinictyID.Equals("d"))
+            return Color.blue;
+        else if(EthinictyID.Equals("e"))
+            return Color.black;
+        else
+            return Color.white;
+    }
+
+    public Color32 GetSelectedColor() {
+        return Color.red;
+    }
 }
