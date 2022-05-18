@@ -33,6 +33,7 @@ public class DisplayMap : MonoBehaviour {
                     transform.position = new Vector3(transform.position.x + 0.1f / (float)scaleFactor, transform.position.y, 0);
                     instantiatedPixel = (GameObject)Instantiate(pixel, transform.position, Quaternion.identity);
                     instantiatedPixel.GetComponent<SpriteRenderer>().color = pixelData.GetLandColor();
+                    instantiatedPixel.AddComponent<PixelBehavior>();
                     instantiatedPixel.name = y + ", " + x;
 
                     pixelArray[x, y] = instantiatedPixel;
