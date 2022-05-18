@@ -7,6 +7,8 @@ public class PixelBehavior : MonoBehaviour
 {
     public int x;
     public int y;
+    public DisplayMap displayMapScript;
+    public bool drewOn = false;
     SpriteRenderer m_Renderer;
     // Start is called before the first frame update
     void Start()
@@ -15,9 +17,9 @@ public class PixelBehavior : MonoBehaviour
         /*String name = gameObject.name;
         int xCoordinateLength = name.indexOf(" ")
         int xCoordinate = name.Substring(0, xCoordinateLength);
-        int yCoordinate = name.Substring(xCoordinateLength);
-        displayMapScript = GameObject.Find("GameManager").getComponent<DisplayMap>();
-        displayMapScript.world[]*/
+        int yCoordinate = name.Substring(xCoordinateLength);*/
+        displayMapScript = GameObject.Find("GameManager").GetComponent<DisplayMap>();
+        //displayMapScript.world[]
         m_Renderer = GetComponent<SpriteRenderer>();
     }
 
@@ -26,11 +28,16 @@ public class PixelBehavior : MonoBehaviour
     {
         // checks to see if mouse is near, then if it is, turn to red when left click is down. Allows for drawing larger sizes
         Vector2 changeInCoords = new Vector2(Mathf.Abs(transform.position.x - Camera.main.ScreenToWorldPoint(Input.mousePosition).x), Mathf.Abs(transform.position.y - Camera.main.ScreenToWorldPoint(Input.mousePosition).y));
-        if (Input.GetKey(KeyCode.Mouse0) && Mathf.Sqrt(Mathf.Pow(changeInCoords.x,2) + Mathf.Pow(changeInCoords.y,2)) < 0.3f)
+        if (Input.GetKey(KeyCode.Mouse0) && Mathf.Sqrt(Mathf.Pow(changeInCoords.x,2) + Mathf.Pow(changeInCoords.y,2)) < 0.25f)
         {
             World.world[x, y].IsSelected = true;
             m_Renderer.color = Color.red;
             gameObject.transform.parent = GameObject.Find("SelectedPixels").transform; // selected pixel becomes a child of the SelectedPixels parent
+            drewOn = true;
         }
+        /*else if (displayMapScript.settingBackToDefaultLayer && drewOn) // if display is switching back to land mode, switch back to highlighted pixels
+        {
+            m_Renderer.color = Color.red;
+        }*/
     }
 }

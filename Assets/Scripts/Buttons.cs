@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Buttons : MonoBehaviour {
     public DisplayMap displayMap;
+    public GameObject loadingText;
     public void OnEthnicityButtonPress() {
         Debug.Log("test");
         displayMap.DisplayEthnicityColor();
@@ -31,6 +32,7 @@ public class Buttons : MonoBehaviour {
     }
 
     public void ReloadScene() {
+        loadingText.SetActive(true);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
