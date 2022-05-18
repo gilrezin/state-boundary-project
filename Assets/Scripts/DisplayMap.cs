@@ -6,6 +6,7 @@ public class DisplayMap : MonoBehaviour {
     public GameObject pixel;
     public GameObject instantiatedPixel;
     public GameObject[,] pixelArray;
+    public GameObject loadingText;
     public Pixel[,] world;
     public double scaleFactor = 1.5;
     public int minimumNumberOfCircles = 35;
@@ -15,7 +16,7 @@ public class DisplayMap : MonoBehaviour {
     public int ySize = 176;
     void Start() {
         
-
+        loadingText.SetActive(true);
         world = WorldGenerator.GenerateWorld((int)(xSize * scaleFactor), (int)(ySize * scaleFactor), minimumNumberOfCircles, maximumNumberOfCircles);
         pixelArray = new GameObject[(int)(xSize * scaleFactor), (int)(ySize* scaleFactor)];
 
@@ -42,6 +43,7 @@ public class DisplayMap : MonoBehaviour {
 
             transform.position = new Vector3(-8.8f, transform.position.y - 0.1f / (float)scaleFactor, 0);
         }
+        loadingText.SetActive(false);
         return;
     }
     
@@ -64,9 +66,12 @@ public class DisplayMap : MonoBehaviour {
                 Pixel pixelData = world[x, y];
                 if (pixel == null)
                     continue;
-
                 pixel.GetComponent<SpriteRenderer>().color = pixelData.GetLandColor();
             }
+        }
+        foreach(Transform child in GameObject.Find("SelectedPixels").transform) // goes through every pixel that has been selected by the user and recolors it red
+        {
+            child.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
         }
     }
 
