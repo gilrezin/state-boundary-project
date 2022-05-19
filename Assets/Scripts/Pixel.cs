@@ -38,9 +38,10 @@ public class  Pixel {
     }
 
     public Color GetLandColor() {
-        if (IsSelected == true)
-            return GetSelectedColor();
 
+        if (IsSelected == true)
+            return GetSelectedColor(); //If pixel is selected give red
+        
         if (ElevationPercentage < .2)
             return new Color32(116, 183, 49, 255);
         else if (.2 <= ElevationPercentage && ElevationPercentage < .4)
@@ -55,7 +56,7 @@ public class  Pixel {
 
     public Color32 GetOilColor() {
         if (IsSelected == true)
-            return GetSelectedColor();
+            return GetSelectedColor();//If pixel is selected give red
 
         if (OilResourcePercentage < .2)
             return Color.white;
@@ -71,11 +72,11 @@ public class  Pixel {
 
     public Color32 GetGoldColor() {
         if (IsSelected == true)
-            return GetSelectedColor();
+            return GetSelectedColor();//If pixel is selected give red
 
         if (GoldResorucePercentage < .2)
             return Color.white;
-        else if (.4 <= GoldResorucePercentage && GoldResorucePercentage < .4)
+        else if (.2 <= GoldResorucePercentage && GoldResorucePercentage < .4)
             return new Color32(78, 122, 36, 255);
         else if (.4 <= GoldResorucePercentage && GoldResorucePercentage < .6)
             return new Color32(96, 186, 100, 255);
@@ -87,7 +88,7 @@ public class  Pixel {
 
     public Color32 GetWoodColor() {
         if (IsSelected == true)
-            return GetSelectedColor();
+            return GetSelectedColor();//If pixel is selected give red
 
         if (WoodResorucePercentage < .2)
             return Color.white;
@@ -105,18 +106,18 @@ public class  Pixel {
 
     public Color32 GetEthnicityColor() {
         if (IsSelected == true)
-            return GetSelectedColor();
+            return GetSelectedColor();//If pixel is selected give red
 
         if (EthinictyID.Equals("a"))
-            return Color.cyan;
-        else if(EthinictyID.Equals("b"))
-            return Color.magenta;
-        else if(EthinictyID.Equals("c"))
-            return Color.gray;
-        else if(EthinictyID.Equals("d"))
-            return Color.blue;
-        else if(EthinictyID.Equals("e"))
-            return Color.black;
+            return new Color32(255, 218, 0, 255);
+        else if (EthinictyID.Equals("b"))
+            return new Color32(255, 20, 142, 255);
+        else if (EthinictyID.Equals("c"))
+            return new Color32(130, 0, 130, 255);
+        else if (EthinictyID.Equals("d"))
+            return new Color32(255, 119, 165, 255);
+        else if (EthinictyID.Equals("e"))
+            return new Color32(192, 9, 216, 255);
         else
             return Color.white;
     }
