@@ -99,7 +99,7 @@ public class WorldGenerator {
         Pixel[,] pixelArray = new Pixel[xSize, ySize];
         double[,] landPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, new Random().Next(7, 52), 1.1d);
         double[,] oilPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles*40, MaximumNumberOfCircles * 40, new Random().Next(1, 10), .95d);
-        double[,] goldPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles * 40, MaximumNumberOfCircles * 40, new Random().Next(1, 10), .95d);
+        double[,] goldPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles * 40, MaximumNumberOfCircles * 40, new Random().Next(1, 60), .95d);
         double[,] woodPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, new Random().Next(5, 40), 1.3d);
         double[,] ethnicityPercentageData = GeneratePercentageArray(xSize, ySize, MinimumNumberOfCircles, MaximumNumberOfCircles, new Random().Next(10, 30), 1d);
         for (int x = 0; x < xSize; x++) {

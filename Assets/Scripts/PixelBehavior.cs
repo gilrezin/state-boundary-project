@@ -31,7 +31,17 @@ public class PixelBehavior : MonoBehaviour
         if (Input.GetKey(KeyCode.Mouse0) && Mathf.Sqrt(Mathf.Pow(changeInCoords.x,2) + Mathf.Pow(changeInCoords.y,2)) < 0.25f)
         {
             World.world[x, y].IsSelected = true;
-            m_Renderer.color = Color.red;
+            if (World.currentView.Equals("LAND"))
+                m_Renderer.color = World.world[x, y].GetLandColor();
+            if (World.currentView.Equals("NATION"))
+                m_Renderer.color = World.world[x, y].GetEthnicityColor();
+            if (World.currentView.Equals("WOOD"))
+                m_Renderer.color = World.world[x, y].GetWoodColor();
+            if (World.currentView.Equals("OIL"))
+                m_Renderer.color = World.world[x, y].GetOilColor();
+            if (World.currentView.Equals("GOLD"))
+                m_Renderer.color = World.world[x, y].GetGoldColor();
+
             gameObject.transform.parent = GameObject.Find("SelectedPixels").transform; // selected pixel becomes a child of the SelectedPixels parent
             drewOn = true;
         }

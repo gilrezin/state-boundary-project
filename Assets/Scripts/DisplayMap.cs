@@ -21,6 +21,7 @@ public class DisplayMap : MonoBehaviour {
         World.world = WorldGenerator.GenerateWorld((int)(xSize * scaleFactor), (int)(ySize * scaleFactor), minimumNumberOfCircles, maximumNumberOfCircles);
         loadingText.SetActive(true);
         pixelArray = new GameObject[(int)(xSize * scaleFactor), (int)(ySize* scaleFactor)];
+        World.currentView = "LAND";
 
         transform.position = new Vector3(-8.8f, 4.9f, 0);
         for (int x = 0; x < xSize * scaleFactor; x++) {
@@ -61,6 +62,7 @@ public class DisplayMap : MonoBehaviour {
                 pixel.GetComponent<SpriteRenderer>().color = pixelData.GetEthnicityColor();
             }
         }
+        World.currentView = "NATION";
     }
 
     public void DisplayLandColor() {
@@ -73,10 +75,8 @@ public class DisplayMap : MonoBehaviour {
                 pixel.GetComponent<SpriteRenderer>().color = pixelData.GetLandColor();
             }
         }
-        foreach(Transform child in GameObject.Find("SelectedPixels").transform) // goes through every pixel that has been selected by the user and recolors it red
-        {
-            child.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-        }
+        World.currentView = "LAND";
+
     }
 
     public void DisplayOilColor() {
@@ -90,6 +90,7 @@ public class DisplayMap : MonoBehaviour {
                 pixel.GetComponent<SpriteRenderer>().color = pixelData.GetOilColor();
             }
         }
+        World.currentView = "OIL";
     }
 
     public void DisplayGoldColor() {
@@ -103,6 +104,7 @@ public class DisplayMap : MonoBehaviour {
                 pixel.GetComponent<SpriteRenderer>().color = pixelData.GetGoldColor();
             }
         }
+        World.currentView = "GOLD";
     }
 
     public void DisplayWoodColor() {
@@ -116,6 +118,7 @@ public class DisplayMap : MonoBehaviour {
                 pixel.GetComponent<SpriteRenderer>().color = pixelData.GetWoodColor();
             }
         }
+        World.currentView = "WOOD";
     }
 
     public void ClearSelection() {
@@ -131,5 +134,6 @@ public class DisplayMap : MonoBehaviour {
                 pixel.GetComponent<SpriteRenderer>().color = pixelData.GetLandColor();
             }
         }
+        World.currentView = "LAND";
     }
 }
