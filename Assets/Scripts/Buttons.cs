@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class Buttons : MonoBehaviour {
     public DisplayMap displayMap;
     public GameObject loadingText;
+    public GameManager gameManager;
     public void OnEthnicityButtonPress() {
         displayMap.DisplayEthnicityColor();
     }
@@ -33,6 +34,10 @@ public class Buttons : MonoBehaviour {
 
     public void OnClearButtonPress() {
         displayMap.ClearSelection();
+    }
+
+    public void CalculateButtonPress() {
+        gameManager.CalculateStability();
     }
 
 }
