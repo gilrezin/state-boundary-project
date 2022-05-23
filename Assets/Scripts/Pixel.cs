@@ -14,6 +14,7 @@ public class  Pixel {
     public double OilResourcePercentage;
     public double GoldResorucePercentage = 0;
     public double WoodResorucePercentage = 0;
+    public bool drewOn = false;
 
     public string EthinictyID = "";
 

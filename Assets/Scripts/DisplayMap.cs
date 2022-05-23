@@ -37,9 +37,9 @@ public class DisplayMap : MonoBehaviour {
                     transform.position = new Vector3(transform.position.x + 0.1f / (float)scaleFactor, transform.position.y, 0);
                     instantiatedPixel = (GameObject)Instantiate(pixel, transform.position, Quaternion.identity);
                     instantiatedPixel.GetComponent<SpriteRenderer>().color = pixelData.GetLandColor();
-                    instantiatedPixel.AddComponent<PixelBehavior>();
-                    instantiatedPixel.GetComponent<PixelBehavior>().x = x;
-                    instantiatedPixel.GetComponent<PixelBehavior>().y = y;
+                    //instantiatedPixel.AddComponent<PixelBehavior>();
+                    //instantiatedPixel.GetComponent<PixelBehavior>().x = x;
+                    //instantiatedPixel.GetComponent<PixelBehavior>().y = y;
                     instantiatedPixel.name = y + ", " + x;
 
                     pixelArray[x, y] = instantiatedPixel;
@@ -129,7 +129,7 @@ public class DisplayMap : MonoBehaviour {
                 if (pixel == null)
                     continue;
                 pixelData.IsSelected = false;
-                pixel.GetComponent<PixelBehavior>().drewOn = false;
+                //pixel.GetComponent<PixelBehavior>().drewOn = false;
                 pixel.transform.parent = transform;
                 pixel.GetComponent<SpriteRenderer>().color = pixelData.GetLandColor();
             }

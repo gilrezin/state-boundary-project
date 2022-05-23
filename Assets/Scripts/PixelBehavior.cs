@@ -28,26 +28,25 @@ public class PixelBehavior : MonoBehaviour
     {
         // checks to see if mouse is near, then if it is, turn to red when left click is down. Allows for drawing larger sizes
         Vector2 changeInCoords = new Vector2(Mathf.Abs(transform.position.x - Camera.main.ScreenToWorldPoint(Input.mousePosition).x), Mathf.Abs(transform.position.y - Camera.main.ScreenToWorldPoint(Input.mousePosition).y));
-        if (Input.GetKey(KeyCode.Mouse0) && Mathf.Sqrt(Mathf.Pow(changeInCoords.x,2) + Mathf.Pow(changeInCoords.y,2)) < 0.25f)
+        if (Mathf.Sqrt(Mathf.Pow(changeInCoords.x,2) + Mathf.Pow(changeInCoords.y,2)) < 0.25f)
         {
-            World.world[x, y].IsSelected = true;
-            if (World.currentView.Equals("LAND"))
-                m_Renderer.color = World.world[x, y].GetLandColor();
-            if (World.currentView.Equals("NATION"))
-                m_Renderer.color = World.world[x, y].GetEthnicityColor();
-            if (World.currentView.Equals("WOOD"))
-                m_Renderer.color = World.world[x, y].GetWoodColor();
-            if (World.currentView.Equals("OIL"))
-                m_Renderer.color = World.world[x, y].GetOilColor();
-            if (World.currentView.Equals("GOLD"))
-                m_Renderer.color = World.world[x, y].GetGoldColor();
+            if (Input.GetKey(KeyCode.Mouse0))
+            {
+                World.world[x, y].IsSelected = true;
+                if (World.currentView.Equals("LAND"))
+                    m_Renderer.color = World.world[x, y].GetLandColor();
+                if (World.currentView.Equals("NATION"))
+                    m_Renderer.color = World.world[x, y].GetEthnicityColor();
+                if (World.currentView.Equals("WOOD"))
+                    m_Renderer.color = World.world[x, y].GetWoodColor();
+                if (World.currentView.Equals("OIL"))
+                    m_Renderer.color = World.world[x, y].GetOilColor();
+                if (World.currentView.Equals("GOLD"))
+                    m_Renderer.color = World.world[x, y].GetGoldColor();
 
-            gameObject.transform.parent = GameObject.Find("SelectedPixels").transform; // selected pixel becomes a child of the SelectedPixels parent
-            drewOn = true;
+                gameObject.transform.parent = GameObject.Find("SelectedPixels").transform; // selected pixel becomes a child of the SelectedPixels parent
+                drewOn = true;
+            }
         }
-        /*else if (displayMapScript.settingBackToDefaultLayer && drewOn) // if display is switching back to land mode, switch back to highlighted pixels
-        {
-            m_Renderer.color = Color.red;
-        }*/
     }
 }
