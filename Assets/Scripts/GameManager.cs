@@ -23,14 +23,14 @@ public class GameManager : MonoBehaviour {
             Vector2 cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             int positionX = (int) (Mathf.Abs((cameraPosition.y - 4.9f) * 15)); 
             int positionY = (int) (Mathf.Abs((cameraPosition.x + 8.733333f) * 15));
-            Debug.Log(positionX + ", " + positionY);
+            //Debug.Log(positionX + ", " + positionY);
             for (int x = positionX - 2; x < positionX + 2; x++)
             {
                 for (int y = positionY - 2; y < positionY + 2; y++)
                 {
                     try 
                     {
-                    World.world[x, y].IsSelected = true;
+                    World.world[x, y].drewOn = true;
                     if (World.currentView.Equals("LAND"))
                         GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
                     else if (World.currentView.Equals("NATION"))
@@ -43,7 +43,6 @@ public class GameManager : MonoBehaviour {
                         GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor();
 
                     GameObject.Find(x + ", " + y).transform.parent = GameObject.Find("SelectedPixels").transform; // selected pixel becomes a child of the SelectedPixels parent
-                     World.world[x, y].drewOn = true;
                     } catch {}
                 }
             }

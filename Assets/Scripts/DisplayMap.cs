@@ -128,7 +128,7 @@ public class DisplayMap : MonoBehaviour {
                 Pixel pixelData = World.world[x, y];
                 if (pixel == null)
                     continue;
-                pixelData.IsSelected = false;
+                pixelData.drewOn = false;
                 //pixel.GetComponent<PixelBehavior>().drewOn = false;
                 pixel.transform.parent = transform;
                 pixel.GetComponent<SpriteRenderer>().color = pixelData.GetLandColor();
