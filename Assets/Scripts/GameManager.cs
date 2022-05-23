@@ -76,8 +76,8 @@ public class GameManager : MonoBehaviour {
         for (int i = 0; i < contiguousPixels.Count - 1; i++)
         {
             // search for this pixel's immediate neighbors. Add them to the list if they are not a duplicate
-            int baseXCoordinate = pixels[i].GetComponent<PixelBehavior>().x;
-            int baseYCoordinate = pixels[i].GetComponent<PixelBehavior>().y;
+            int baseXCoordinate = (int) pixels[i].transform.position.x;
+            int baseYCoordinate = (int) pixels[i].transform.position.y;
             try 
             {
                 adjustedXCoordinate = baseXCoordinate - 1;
