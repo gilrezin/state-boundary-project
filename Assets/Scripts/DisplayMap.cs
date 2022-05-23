@@ -40,7 +40,7 @@ public class DisplayMap : MonoBehaviour {
                     //instantiatedPixel.AddComponent<PixelBehavior>();
                     //instantiatedPixel.GetComponent<PixelBehavior>().x = x;
                     //instantiatedPixel.GetComponent<PixelBehavior>().y = y;
-                    instantiatedPixel.name = y + ", " + x;
+                    instantiatedPixel.name = x + ", " + y;
 
                     pixelArray[x, y] = instantiatedPixel;
                 }

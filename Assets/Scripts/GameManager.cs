@@ -21,13 +21,15 @@ public class GameManager : MonoBehaviour {
         if (Input.GetKey(KeyCode.Mouse0))
         {
             Vector2 cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            int positionX = (int) (Mathf.Abs((cameraPosition.x + 8.733333f) * 15));
-            int positionY = (int) (Mathf.Abs((cameraPosition.y - 4.9f) * 15));
+            int positionX = (int) (Mathf.Abs((cameraPosition.y - 4.9f) * 15)); 
+            int positionY = (int) (Mathf.Abs((cameraPosition.x + 8.733333f) * 15));
             Debug.Log(positionX + ", " + positionY);
             for (int x = positionX - 2; x < positionX + 2; x++)
             {
                 for (int y = positionY - 2; y < positionY + 2; y++)
                 {
+                    try 
+                    {
                     World.world[x, y].IsSelected = true;
                     if (World.currentView.Equals("LAND"))
                         GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
@@ -42,6 +44,7 @@ public class GameManager : MonoBehaviour {
 
                     GameObject.Find(x + ", " + y).transform.parent = GameObject.Find("SelectedPixels").transform; // selected pixel becomes a child of the SelectedPixels parent
                      World.world[x, y].drewOn = true;
+                    } catch {}
                 }
             }
         }
@@ -85,21 +88,21 @@ public class GameManager : MonoBehaviour {
             try 
             {
                 adjustedXCoordinate = baseXCoordinate + 1;
-                if (!contiguousPixels.Contains(GameObject.Find(adjustedXCoordinate + ", " + baseYCoordinate)));
+                if (!contiguousPixels.Contains(GameObject.Find(adjustedXCoordinate + ", " + baseYCoordinate)))
                     contiguousPixels.Add(GameObject.Find(adjustedXCoordinate + ", " + baseYCoordinate));
                     Debug.Log("added");
             } catch {Debug.Log("caught");}
             try 
             {
                 adjustedYCoordinate = baseYCoordinate - 1;
-                if (!contiguousPixels.Contains(GameObject.Find(baseXCoordinate + ", " + adjustedYCoordinate)));
+                if (!contiguousPixels.Contains(GameObject.Find(baseXCoordinate + ", " + adjustedYCoordinate)))
                     contiguousPixels.Add(GameObject.Find(baseXCoordinate + ", " + adjustedYCoordinate));
                     Debug.Log("added");
             } catch {Debug.Log("caught");}
             try 
             {
                 adjustedYCoordinate = baseXCoordinate + 1;
-                if (!contiguousPixels.Contains(GameObject.Find(baseXCoordinate + ", " + adjustedYCoordinate)));
+                if (!contiguousPixels.Contains(GameObject.Find(baseXCoordinate + ", " + adjustedYCoordinate)))
                     contiguousPixels.Add(GameObject.Find(baseXCoordinate + ", " + adjustedYCoordinate));
                     Debug.Log("added");
             } catch {Debug.Log("caught");}
