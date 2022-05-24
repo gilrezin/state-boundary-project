@@ -53,12 +53,12 @@ public class GameManager : MonoBehaviour {
             pixels[index] = child.gameObject.name;
             index++;
         }
-        IsFractured();
-        IsElongated();
+        Debug.Log("Fractured: " + IsFractured());
+        Debug.Log("Elongated: " + IsElongated());
     }
-    public void IsFractured() {
+    public double IsFractured() {
         // determine if borders are fractured - create an array of contiguous pixels
-        List<String> contiguousPixels = new() {
+        List<string> contiguousPixels = new() {
             // find the first pixel in the script, then find its neighbors
             pixels[0]
         };
@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour {
         int adjustedYCoordinate;
         for (int i = 0; i < contiguousPixels.Count; i++) {
             // search for this pixel's immediate neighbors. Add them to the list if they are not a duplicate
-            String pixelName = contiguousPixels[i];
+            string pixelName = contiguousPixels[i];
             int baseXCoordinate = int.Parse(pixelName[..pixelName.IndexOf(", ")]);
             int baseYCoordinate = int.Parse(pixelName[(pixelName.IndexOf(", ") + 1)..]);
             try {
@@ -101,14 +101,10 @@ public class GameManager : MonoBehaviour {
             catch {}
         }
         if (pixels.Length == contiguousPixels.Count) {
-            Debug.Log(contiguousPixels.Count);
-            Debug.Log("not fractured");
-            Debug.Log(contiguousPixels.Count / pixels.Length);
+            return contiguousPixels.Count / pixels.Length;
         }
         else {
-            Debug.Log(contiguousPixels.Count);
-            Debug.Log((double) ((double)contiguousPixels.Count) / ((double)pixels.Length));
-            Debug.Log("fractured");
+            return (double) ((double)contiguousPixels.Count) / ((double)pixels.Length);
         }
     }
 
