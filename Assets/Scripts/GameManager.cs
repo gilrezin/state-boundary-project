@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour {
                     if (Array.IndexOf(pixels, adjustedXCoordinate + ", " + baseYCoordinate) != -1)
                         contiguousPixels.Add(adjustedXCoordinate + ", " + baseYCoordinate);
             }
-            catch {}
+            catch { }
             try {
                 adjustedXCoordinate = baseXCoordinate + 1;
                 if (!contiguousPixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
@@ -84,27 +84,27 @@ public class GameManager : MonoBehaviour {
                         contiguousPixels.Add(adjustedXCoordinate + ", " + baseYCoordinate);
                     }
             }
-            catch {}
+            catch { }
             try {
                 adjustedYCoordinate = baseYCoordinate - 1;
                 if (!contiguousPixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
                     if (Array.IndexOf(pixels, baseXCoordinate + ", " + adjustedYCoordinate) != -1)
                         contiguousPixels.Add(baseXCoordinate + ", " + adjustedYCoordinate);
             }
-            catch {}
+            catch { }
             try {
                 adjustedYCoordinate = baseYCoordinate + 1;
                 if (!contiguousPixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
                     if (Array.IndexOf(pixels, baseXCoordinate + ", " + adjustedYCoordinate) != -1)
                         contiguousPixels.Add(baseXCoordinate + ", " + adjustedYCoordinate);
             }
-            catch {}
+            catch { }
         }
         if (pixels.Length == contiguousPixels.Count) {
             return contiguousPixels.Count / pixels.Length;
         }
         else {
-            return (double) ((double)contiguousPixels.Count) / ((double)pixels.Length);
+            return (double)((double)contiguousPixels.Count) / ((double)pixels.Length);
         }
     }
 
@@ -122,7 +122,7 @@ public class GameManager : MonoBehaviour {
         int largestX = 0;
         int smallestY = int.MaxValue;
         int largestY = 0;
-        foreach(string g in pixels) // runs through every pixel for their x and y values to find the mins and maxes
+        foreach (string g in pixels) // runs through every pixel for their x and y values to find the mins and maxes
         {
             int xCoordinate = int.Parse(g[..g.IndexOf(", ")]);
             int yCoordinate = int.Parse(g[(g.IndexOf(", ") + 1)..]);
