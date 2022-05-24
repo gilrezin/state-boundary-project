@@ -46,8 +46,8 @@ public class GameManager : MonoBehaviour {
                         GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor();
 
                     GameObject.Find(x + ", " + y).transform.parent = GameObject.Find("SelectedPixels").transform; // selected pixel becomes a child of the SelectedPixels parent
-                    }
                     } catch {}
+                    } 
                 }
             }
         }
