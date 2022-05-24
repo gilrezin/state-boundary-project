@@ -152,8 +152,8 @@ public class GameManager : MonoBehaviour {
         int largestY = 0;
         foreach(GameObject g in pixels) // runs through every pixel for their x and y values to find the mins and maxes
         {
-            int xCoordinate = int.Parse(g.name.Substring(0, pixelName.IndexOf(", ")));
-            int yCoordinate = int.Parse(g.name.Substring(pixelName.IndexOf(", ") + 1));
+            int xCoordinate = int.Parse(g.name.Substring(0, g.name.IndexOf(", ")));
+            int yCoordinate = int.Parse(g.name.Substring(g.name.IndexOf(", ") + 1));
             if (xCoordinate > largestX)
                 largestX = xCoordinate;
             if (xCoordinate < smallestX)
