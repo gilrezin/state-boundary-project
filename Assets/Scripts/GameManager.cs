@@ -118,26 +118,39 @@ public class GameManager : MonoBehaviour {
 
     private bool IsElongated() // chccks to see if state shape is elongated
     {
-        int smallestX = 0;
+        int smallestX = int.MaxValue;
         int largestX = 0;
-        int smallestY = 0;
+        int smallestY = int.MaxValue;
         int largestY = 0;
         foreach(string g in pixels) // runs through every pixel for their x and y values to find the mins and maxes
         {
             int xCoordinate = int.Parse(g[..g.IndexOf(", ")]);
             int yCoordinate = int.Parse(g[(g.IndexOf(", ") + 1)..]);
             if (xCoordinate > largestX)
+            {
                 largestX = xCoordinate;
-            if (xCoordinate < smallestX)
+                Debug.Log("new largest x: " + largestX);
+            }
+            else if (xCoordinate < smallestX)
+            {
                 smallestX = xCoordinate;
+                Debug.Log("new smallest x: " + smallestX);
+            }
             if (yCoordinate > largestY)
+            {
                 largestY = yCoordinate;
-            if (yCoordinate < smallestY)
+                Debug.Log("new largest y: " + largestY);
+            }
+            else if (yCoordinate < smallestY)
+            {
                 smallestY = yCoordinate;
+                Debug.Log("new smallest y: " + smallestY);
+            }
         }
         int xDifference = largestX - smallestX;
         int yDifference = largestY - smallestY;
-        if (xDifference * 2 > yDifference || xDifference < yDifference * 2)
+        Debug.Log("Difference in x: " + xDifference + "\nDifference in y: " + yDifference);
+        if (xDifference * 2 < yDifference || xDifference > yDifference * 2)
             return true;
         else
             return false;
