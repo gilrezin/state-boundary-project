@@ -46,7 +46,6 @@ public class GameManager : MonoBehaviour {
             }
         }
     }
-
     public void CalculateStability() {
         pixels = new string[SelectedPixels.transform.childCount]; // get all selected pixels inside an array
         int index = 0;
@@ -54,8 +53,10 @@ public class GameManager : MonoBehaviour {
             pixels[index] = child.gameObject.name;
             index++;
         }
-
-
+        IsFractured();
+        IsElongated();
+    }
+    public void IsFractured() {
         // determine if borders are fractured - create an array of contiguous pixels
         List<String> contiguousPixels = new() {
             // find the first pixel in the script, then find its neighbors
@@ -119,16 +120,16 @@ public class GameManager : MonoBehaviour {
         return (int)(Mathf.Abs((input + 8.733333f) * 15));
     }
 
-    private bool isElongated() // chccks to see if state shape is elongated
+    private bool IsElongated() // chccks to see if state shape is elongated
     {
         int smallestX = 0;
         int largestX = 0;
         int smallestY = 0;
         int largestY = 0;
-        foreach(GameObject g in pixels) // runs through every pixel for their x and y values to find the mins and maxes
+        foreach(string g in pixels) // runs through every pixel for their x and y values to find the mins and maxes
         {
-            int xCoordinate = int.Parse(g.name.Substring(0, g.name.IndexOf(", ")));
-            int yCoordinate = int.Parse(g.name.Substring(g.name.IndexOf(", ") + 1));
+            int xCoordinate = int.Parse(g[..g.IndexOf(", ")]);
+            int yCoordinate = int.Parse(g[(g.IndexOf(", ") + 1)..]);
             if (xCoordinate > largestX)
                 largestX = xCoordinate;
             if (xCoordinate < smallestX)
