@@ -129,27 +129,22 @@ public class GameManager : MonoBehaviour {
             if (xCoordinate > largestX)
             {
                 largestX = xCoordinate;
-                Debug.Log("new largest x: " + largestX);
             }
             else if (xCoordinate < smallestX)
             {
                 smallestX = xCoordinate;
-                Debug.Log("new smallest x: " + smallestX);
             }
             if (yCoordinate > largestY)
             {
                 largestY = yCoordinate;
-                Debug.Log("new largest y: " + largestY);
             }
             else if (yCoordinate < smallestY)
             {
                 smallestY = yCoordinate;
-                Debug.Log("new smallest y: " + smallestY);
             }
         }
         int xDifference = largestX - smallestX;
         int yDifference = largestY - smallestY;
-        Debug.Log("Difference in x: " + xDifference + "\nDifference in y: " + yDifference);
         if (xDifference * 2 < yDifference || xDifference > yDifference * 2)
             return true;
         else
