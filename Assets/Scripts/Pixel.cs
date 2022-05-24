@@ -17,8 +17,6 @@ public class  Pixel {
     public bool drewOn = false;
 
     public string EthinictyID = "";
-
-    public bool IsSelected;
     public Pixel(double ElevationPercentage, double OilResourcePercentage, double GoldResourcePercentage, double WoodResourcePercentage, string EthnicityID, int[] Coordinate) {
         this.ElevationPercentage = ElevationPercentage;
         this.OilResourcePercentage = OilResourcePercentage;
@@ -32,10 +30,10 @@ public class  Pixel {
     }
 
     public void ToggleSelect() {
-        if (IsSelected)
-            IsSelected = false;
+        if (drewOn)
+            drewOn = false;
         else
-            IsSelected = true;
+            drewOn = true;
     }
 
     public Color GetLandColor() {
@@ -52,7 +50,7 @@ public class  Pixel {
         else
             color = new Color32(145, 187, 150, 255);
 
-        if (IsSelected == true)
+        if (drewOn == true)
             return (color + GetSelectedColor()) / 2;
         else
             return color;
@@ -71,7 +69,7 @@ public class  Pixel {
         else
             color = new Color32(145, 187, 150, 255);
 
-        if (IsSelected == true)
+        if (drewOn == true)
             return (color + GetSelectedColor()) / 2;
         else
             return color;
@@ -92,7 +90,7 @@ public class  Pixel {
         else
             color = new Color32(145, 187, 150, 255);
 
-        if (IsSelected == true)
+        if (drewOn == true)
             return (color + GetSelectedColor()) / 2;
         else
             return color;
@@ -114,7 +112,7 @@ public class  Pixel {
         else
             color = new Color32(145, 187, 150, 255);
 
-        if (IsSelected == true)
+        if (drewOn == true)
             return (color + GetSelectedColor()) / 2;
         else
             return color;
@@ -136,7 +134,7 @@ public class  Pixel {
         else
             color = Color.white;
 
-        if (IsSelected == true)
+        if (drewOn == true)
             return (color + GetSelectedColor()) / 2;
         else
             return color;

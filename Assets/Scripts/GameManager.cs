@@ -31,24 +31,23 @@ public class GameManager : MonoBehaviour {
                 {
                     for (int y = positionY - 2; y < positionY + 2; y++)
                     {
-                        try 
-                        {
-                        World.world[x, y].IsSelected = true;
-                        if (World.currentView.Equals("LAND"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
-                        else if (World.currentView.Equals("NATION"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetEthnicityColor();
-                        else if (World.currentView.Equals("WOOD"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetWoodColor();
-                        else if (World.currentView.Equals("OIL"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetOilColor();
-                        else if (World.currentView.Equals("GOLD"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor();
+                    try 
+                    {
+                    World.world[x, y].drewOn = true;
+                    if (World.currentView.Equals("LAND"))
+                        GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
+                    else if (World.currentView.Equals("NATION"))
+                        GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetEthnicityColor();
+                    else if (World.currentView.Equals("WOOD"))
+                        GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetWoodColor();
+                    else if (World.currentView.Equals("OIL"))
+                        GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetOilColor();
+                    else if (World.currentView.Equals("GOLD"))
+                        GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor();
 
-                        GameObject.Find(x + ", " + y).transform.parent = GameObject.Find("SelectedPixels").transform; // selected pixel becomes a child of the SelectedPixels parent
-                        World.world[x, y].drewOn = true;
-                        } catch {}
+                    GameObject.Find(x + ", " + y).transform.parent = GameObject.Find("SelectedPixels").transform; // selected pixel becomes a child of the SelectedPixels parent
                     }
+                    } catch {}
                 }
             }
         }
