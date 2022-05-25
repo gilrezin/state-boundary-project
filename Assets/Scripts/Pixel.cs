@@ -31,7 +31,7 @@ public class  Pixel {
     }
 
     public bool HasGold() {
-        return GoldResorucePercentage > 2;
+        return GoldResorucePercentage > .2;
     }
 
     public bool HasOil() {

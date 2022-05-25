@@ -6,8 +6,8 @@ using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour {
     public GameObject SelectedPixels;
-    private List<string> pixels = new();
-    private List<string> borders = new();
+    private List<string> pixels;
+    private List<string> borders;
     public DisplayMap displayMapScript;
     // Start is called before the first frame update
     void Start() {
@@ -27,6 +27,31 @@ public class GameManager : MonoBehaviour {
                 for (int y = positionY - 2; y < positionY + 2; y++) {
                     try {
                         World.world[x, y].drewOn = true;
+                        if (World.currentView.Equals("LAND"))
+                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
+                        else if (World.currentView.Equals("NATION"))
+                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetEthnicityColor();
+                        else if (World.currentView.Equals("WOOD"))
+                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetWoodColor();
+                        else if (World.currentView.Equals("OIL"))
+                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetOilColor();
+                        else if (World.currentView.Equals("GOLD"))
+                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor();
+                    }
+                    catch { }
+
+                }
+            }
+        }
+
+        else if (Input.GetKey(KeyCode.Mouse1)) {
+            Vector2 cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            int positionX = ToGridCoordinateX(cameraPosition.y);
+            int positionY = ToGridCoordinateY(cameraPosition.x);
+            for (int x = positionX - 2; x < positionX + 2; x++) {
+                for (int y = positionY - 2; y < positionY + 2; y++) {
+                    try {
+                        World.world[x, y].drewOn = false;
                         if (World.currentView.Equals("LAND"))
                             GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
                         else if (World.currentView.Equals("NATION"))
@@ -65,6 +90,7 @@ public class GameManager : MonoBehaviour {
 
 
     public void GetSelectedPixels() {
+        pixels = new();
         foreach (Pixel pixel in World.world) {
             if (!pixel.drewOn)
                 continue;
@@ -76,6 +102,7 @@ public class GameManager : MonoBehaviour {
 
 
     public void FindBorders() {
+        borders = new();
         foreach (string pixel in pixels) {
             // search for this pixel's immediate neighbors. Add them to the list if they are not a duplicate
             int adjustedXCoordinate;
@@ -135,7 +162,7 @@ public class GameManager : MonoBehaviour {
             if (World.world[int.Parse(pixel[..pixel.IndexOf(", ")]), int.Parse(pixel[(pixel.IndexOf(", ") + 1)..])].HasOil())
                 totalOilCount++;
         }
-
+        totalOilCount += borderOilCount;
         return (double)borderOilCount / (double)totalOilCount;
     }
 
@@ -158,6 +185,8 @@ public class GameManager : MonoBehaviour {
             if (World.world[int.Parse(pixel[..pixel.IndexOf(", ")]), int.Parse(pixel[(pixel.IndexOf(", ") + 1)..])].HasGold())
                 totalGoldCount++;
         }
+
+        totalGoldCount += borderGoldCount;
 
         return (double)borderGoldCount / (double)totalGoldCount;
 
@@ -184,6 +213,7 @@ public class GameManager : MonoBehaviour {
                 totalWoodCount++;
         }
 
+        totalWoodCount += borderWoodCount;
         return (double)borderWoodCount / (double)totalWoodCount;
     }
 
