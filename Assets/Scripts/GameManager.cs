@@ -1,8 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using System;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour {
     public GameObject SelectedPixels;
