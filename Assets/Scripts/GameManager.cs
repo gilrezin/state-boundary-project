@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour {
 
         // when mouse position is down, search for the nearest pixels within a radius and color them in
         if (Input.GetKey(KeyCode.Mouse0)) {
+
             Vector2 cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             int positionX = ToGridCoordinateX(cameraPosition.y);
             int positionY = ToGridCoordinateY(cameraPosition.x);
@@ -92,7 +93,7 @@ public class GameManager : MonoBehaviour {
     public void GetSelectedPixels() {
         pixels = new();
         foreach (Pixel pixel in World.world) {
-            if (!pixel.drewOn)
+            if (pixel == null || !pixel.drewOn)
                 continue;
             pixels.Add(pixel.Coordinate[0] + ", " + pixel.Coordinate[1]);
         }

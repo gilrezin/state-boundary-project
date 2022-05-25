@@ -117,7 +117,7 @@ public class WorldGenerator {
                     ethnityID = "d";
                 else
                     ethnityID = "e";
-                
+                if(landPercentageData[x, y] >= 0)
                 pixelArray[x, y] = new Pixel(landPercentageData[x, y], oilPercentageData[x,y], goldPercentageData[x,y], pixelWoodCover, ethnityID, new int[] { x, y });
 
             }
