@@ -6,7 +6,8 @@ using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour {
     public GameObject SelectedPixels;
-    private string[] pixels;
+    private List<string> pixels = new();
+    private List<string> borders = new();
     public DisplayMap displayMapScript;
     // Start is called before the first frame update
     void Start() {
@@ -22,40 +23,175 @@ public class GameManager : MonoBehaviour {
             Vector2 cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             int positionX = ToGridCoordinateX(cameraPosition.y);
             int positionY = ToGridCoordinateY(cameraPosition.x);
-            if (positionX < 128 && positionY < 263) {
-                for (int x = positionX - 2; x < positionX + 2; x++) {
-                    for (int y = positionY - 2; y < positionY + 2; y++) {
-                        try {
-                            World.world[x, y].drewOn = true;
-                            if (World.currentView.Equals("LAND"))
-                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
-                            else if (World.currentView.Equals("NATION"))
-                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetEthnicityColor();
-                            else if (World.currentView.Equals("WOOD"))
-                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetWoodColor();
-                            else if (World.currentView.Equals("OIL"))
-                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetOilColor();
-                            else if (World.currentView.Equals("GOLD"))
-                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor();
-
-                            GameObject.Find(x + ", " + y).transform.parent = GameObject.Find("SelectedPixels").transform; // selected pixel becomes a child of the SelectedPixels parent
-                        }
-                        catch { }
+            for (int x = positionX - 2; x < positionX + 2; x++) {
+                for (int y = positionY - 2; y < positionY + 2; y++) {
+                    try {
+                        World.world[x, y].drewOn = true;
+                        if (World.currentView.Equals("LAND"))
+                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
+                        else if (World.currentView.Equals("NATION"))
+                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetEthnicityColor();
+                        else if (World.currentView.Equals("WOOD"))
+                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetWoodColor();
+                        else if (World.currentView.Equals("OIL"))
+                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetOilColor();
+                        else if (World.currentView.Equals("GOLD"))
+                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor()
                     }
+                    catch { }
+
                 }
             }
         }
     }
+
+
+
+
     public void CalculateStability() {
-        pixels = new string[SelectedPixels.transform.childCount]; // get all selected pixels inside an array
-        int index = 0;
-        foreach (Transform child in SelectedPixels.transform) {
-            pixels[index] = child.gameObject.name;
-            index++;
-        }
+        GetSelectedPixels();
+        displayMapScript.DisplayLandColor();
+
+        FindBorders();
         Debug.Log("Fractured: " + IsFractured());
         Debug.Log("Elongated: " + IsElongated());
+        Debug.Log("Oil: " + OilBoundry());
+        Debug.Log("Wood: " + WoodBoundry());
+        Debug.Log("Gold: " + GoldBoundry());
     }
+
+
+
+
+
+    public void GetSelectedPixels() {
+        foreach (Pixel pixel in World.world) {
+            if (!pixel.drewOn)
+                continue;
+            pixels.Add(pixel.Coordinate[0] + ", " + pixel.Coordinate[1]);
+        }
+    }
+
+
+
+
+    public void FindBorders() {
+        foreach (string pixel in pixels) {
+            // search for this pixel's immediate neighbors. Add them to the list if they are not a duplicate
+            int adjustedXCoordinate;
+            int adjustedYCoordinate;
+            int baseXCoordinate = int.Parse(pixel[..pixel.IndexOf(", ")]);
+            int baseYCoordinate = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
+            int numOfNeighbors = 0;
+            try {
+                adjustedXCoordinate = baseXCoordinate - 1;
+                if (pixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
+                    numOfNeighbors++;
+            }
+            catch { }
+            try {
+                adjustedXCoordinate = baseXCoordinate + 1;
+                if (pixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
+                    numOfNeighbors++;
+            }
+            catch { }
+            try {
+                adjustedYCoordinate = baseYCoordinate - 1;
+                if (pixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
+                    numOfNeighbors++;
+            }
+            catch { }
+            try {
+                adjustedYCoordinate = baseYCoordinate + 1;
+                if (pixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
+                    numOfNeighbors++;
+            }
+            catch { }
+            if (numOfNeighbors != 4) {
+                borders.Add(pixel);
+                GameObject.Find(pixel).GetComponent<SpriteRenderer>().color = (World.world[baseXCoordinate, baseYCoordinate].GetLandColor() + Color.black) / 2;
+            }
+
+        }
+    }
+
+
+
+
+
+    public double OilBoundry() {
+        if (borders.Count == 0)
+            FindBorders();
+        int borderOilCount = 0;
+        int totalOilCount = 0;
+        foreach (string pixel in borders) {
+            int x = int.Parse(pixel[..pixel.IndexOf(", ")]);
+            int y = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
+            if (World.world[x, y].HasOil()) {
+                borderOilCount++;
+            }
+        }
+        foreach (string pixel in pixels) {
+            if (World.world[int.Parse(pixel[..pixel.IndexOf(", ")]), int.Parse(pixel[(pixel.IndexOf(", ") + 1)..])].HasOil())
+                totalOilCount++;
+        }
+
+        return (double)borderOilCount / (double)totalOilCount;
+    }
+
+
+
+    public double GoldBoundry() {
+        if (borders.Count == 0)
+            FindBorders();
+        int borderGoldCount = 0;
+        int totalGoldCount = 0;
+        foreach (string pixel in borders) {
+            int x = int.Parse(pixel[..pixel.IndexOf(", ")]);
+            int y = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
+            if (World.world[x, y].HasGold()) {
+                borderGoldCount++;
+            }
+        }
+
+        foreach (string pixel in pixels) {
+            if (World.world[int.Parse(pixel[..pixel.IndexOf(", ")]), int.Parse(pixel[(pixel.IndexOf(", ") + 1)..])].HasGold())
+                totalGoldCount++;
+        }
+
+        return (double)borderGoldCount / (double)totalGoldCount;
+
+
+    }
+
+
+
+    public double WoodBoundry() {
+        if (borders.Count == 0)
+            FindBorders();
+        int borderWoodCount = 0;
+        int totalWoodCount = 0;
+        foreach (string pixel in borders) {
+            int x = int.Parse(pixel[..pixel.IndexOf(", ")]);
+            int y = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
+            if (World.world[x, y].HasWood()) {
+                borderWoodCount++;
+            }
+        }
+
+        foreach (string pixel in pixels) {
+            if (World.world[int.Parse(pixel[..pixel.IndexOf(", ")]), int.Parse(pixel[(pixel.IndexOf(", ") + 1)..])].HasWood())
+                totalWoodCount++;
+        }
+
+        return (double)borderWoodCount / (double)totalWoodCount;
+    }
+
+
+
+
+
+
     public double IsFractured() {
         // determine if borders are fractured - create an array of contiguous pixels
         List<string> contiguousPixels = new() {
@@ -73,14 +209,14 @@ public class GameManager : MonoBehaviour {
             try {
                 adjustedXCoordinate = baseXCoordinate - 1;
                 if (!contiguousPixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
-                    if (Array.IndexOf(pixels, adjustedXCoordinate + ", " + baseYCoordinate) != -1)
+                    if (pixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
                         contiguousPixels.Add(adjustedXCoordinate + ", " + baseYCoordinate);
             }
             catch { }
             try {
                 adjustedXCoordinate = baseXCoordinate + 1;
                 if (!contiguousPixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
-                    if (Array.IndexOf(pixels, adjustedXCoordinate + ", " + baseYCoordinate) != -1) {
+                    if (pixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate)) {
                         contiguousPixels.Add(adjustedXCoordinate + ", " + baseYCoordinate);
                     }
             }
@@ -88,35 +224,33 @@ public class GameManager : MonoBehaviour {
             try {
                 adjustedYCoordinate = baseYCoordinate - 1;
                 if (!contiguousPixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
-                    if (Array.IndexOf(pixels, baseXCoordinate + ", " + adjustedYCoordinate) != -1)
+                    if (pixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
                         contiguousPixels.Add(baseXCoordinate + ", " + adjustedYCoordinate);
             }
             catch { }
             try {
                 adjustedYCoordinate = baseYCoordinate + 1;
                 if (!contiguousPixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
-                    if (Array.IndexOf(pixels, baseXCoordinate + ", " + adjustedYCoordinate) != -1)
+                    if (pixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
                         contiguousPixels.Add(baseXCoordinate + ", " + adjustedYCoordinate);
             }
             catch { }
         }
-        if (pixels.Length == contiguousPixels.Count) {
-            return contiguousPixels.Count / pixels.Length;
+        if (pixels.Count == contiguousPixels.Count) {
+            return contiguousPixels.Count / pixels.Count;
         }
         else {
-            return (double)((double)contiguousPixels.Count) / ((double)pixels.Length);
+            return (double)((double)contiguousPixels.Count) / ((double)pixels.Count);
         }
     }
 
-    private int ToGridCoordinateX(float input) {
-        return (int)(Mathf.Abs((input - 4.9f) * 15));
-    }
 
-    private int ToGridCoordinateY(float input) {
-        return (int)(Mathf.Abs((input + 8.733333f) * 15));
-    }
 
-    private bool IsElongated() // chccks to see if state shape is elongated
+
+
+
+
+    public bool IsElongated() // chccks to see if state shape is elongated
     {
         int smallestX = int.MaxValue;
         int largestX = 0;
@@ -126,20 +260,16 @@ public class GameManager : MonoBehaviour {
         {
             int xCoordinate = int.Parse(g[..g.IndexOf(", ")]);
             int yCoordinate = int.Parse(g[(g.IndexOf(", ") + 1)..]);
-            if (xCoordinate > largestX)
-            {
+            if (xCoordinate > largestX) {
                 largestX = xCoordinate;
             }
-            else if (xCoordinate < smallestX)
-            {
+            else if (xCoordinate < smallestX) {
                 smallestX = xCoordinate;
             }
-            if (yCoordinate > largestY)
-            {
+            if (yCoordinate > largestY) {
                 largestY = yCoordinate;
             }
-            else if (yCoordinate < smallestY)
-            {
+            else if (yCoordinate < smallestY) {
                 smallestY = yCoordinate;
             }
         }
@@ -149,5 +279,13 @@ public class GameManager : MonoBehaviour {
             return true;
         else
             return false;
+    }
+
+    private int ToGridCoordinateX(float input) {
+        return (int)(Mathf.Abs((input - 4.9f) * 15));
+    }
+
+    private int ToGridCoordinateY(float input) {
+        return (int)(Mathf.Abs((input + 8.733333f) * 15));
     }
 }

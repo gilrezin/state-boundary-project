@@ -15,6 +15,7 @@ public class  Pixel {
     public double GoldResorucePercentage = 0;
     public double WoodResorucePercentage = 0;
     public bool drewOn = false;
+    public bool border = false;
 
     public string EthinictyID = "";
     public Pixel(double ElevationPercentage, double OilResourcePercentage, double GoldResourcePercentage, double WoodResourcePercentage, string EthnicityID, int[] Coordinate) {
@@ -29,12 +30,18 @@ public class  Pixel {
 
     }
 
-    public void ToggleSelect() {
-        if (drewOn)
-            drewOn = false;
-        else
-            drewOn = true;
+    public bool HasGold() {
+        return GoldResorucePercentage > 2;
     }
+
+    public bool HasOil() {
+        return OilResourcePercentage > .2;
+    }
+
+    public bool HasWood() {
+        return WoodResorucePercentage > .2;
+    }
+
 
     public Color GetLandColor() {
         Color color;

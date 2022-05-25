@@ -32,11 +32,10 @@ public class WorldGenerator {
                     list.Add(Math.Sqrt(Math.Pow(centers[i, 0] - 1 - x, 2) + Math.Pow(centers[i, 1] - 1 - y, 2)));
                 }
                 list.Sort();
-                double weightedAverageDistanceFromCenter = list[0];
-                data[x, y] = (new Random().NextDouble() * (weightedAverageDistanceFromCenter / 2));
+                double furthestDistance = list[0];
+                data[x, y] = (new Random().NextDouble() * (furthestDistance / 2));
             }
         }
-
 
 
 
@@ -44,8 +43,6 @@ public class WorldGenerator {
         int count = xSize * ySize;
         double maxValue = 0;
         double minValue = Double.MaxValue;
-
-
 
 
         double[,] averagedData = new double[xSize, ySize];
