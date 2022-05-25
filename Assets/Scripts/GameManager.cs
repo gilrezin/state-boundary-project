@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour {
                         else if (World.currentView.Equals("OIL"))
                             GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetOilColor();
                         else if (World.currentView.Equals("GOLD"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor()
+                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor();
                     }
                     catch { }
 
