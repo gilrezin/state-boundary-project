@@ -1,6 +1,8 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Linq;
 
 public class GameManager : MonoBehaviour {
     public GameObject SelectedPixels;
@@ -82,6 +84,7 @@ public class GameManager : MonoBehaviour {
         Debug.Log("Oil: " + OilBoundry());
         Debug.Log("Wood: " + WoodBoundry());
         Debug.Log("Gold: " + GoldBoundry());
+        Debug.Log("Protruded: " + IsProtruded());
     }
 
 
@@ -328,12 +331,70 @@ public class GameManager : MonoBehaviour {
                 smallestY = yCoordinate;
             }
         }
-        int xDifference = largestX - smallestX;
+        int xDifference = largestX - smallestX; // get the differences in x & y values
         int yDifference = largestY - smallestY;
-        if (xDifference * 2 < yDifference || xDifference > yDifference * 2)
+        //Debug.Log("xDifference: " + xDifference + "\nyDifference: " + yDifference); // debug
+        if (xDifference * 2 < yDifference || xDifference > yDifference * 2) // if either the x or y-values are more than twice the value of the other value, the state is elongated
             return true;
         else
             return false;
+    }
+
+
+    public double IsProtruded()
+    {
+        // make Dictionaries that contain x-values and y-values, and the associated number of times they appear
+        Dictionary<int, int> yValueChart = new Dictionary<int, int>();
+        Dictionary<int, int> xValueChart = new Dictionary<int, int>();
+        foreach (string pixel in pixels) { // for every pixel, obtain its y and x-values
+            int xCoordinate = int.Parse(pixel[..pixel.IndexOf(", ")]);
+            int yCoordinate = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
+            if (!yValueChart.ContainsKey(yCoordinate)) // check if the y-value exists in the dictionary. If it doesn't add it
+            {
+                yValueChart.Add(yCoordinate, 1);
+            } else // if it does exist, append it by 1
+            {
+                yValueChart[yCoordinate]++;
+            }
+
+            if (!xValueChart.ContainsKey(xCoordinate)) // check if the x-value exists in the dictionary. If it doesn't add it
+            {
+                xValueChart.Add(xCoordinate, 1);
+            } else // if it does exist, append it by 1
+            {
+                xValueChart[xCoordinate]++;
+            }
+        }
+        // find the average y-value
+        double averageYValue = yValueChart.Values.Average();
+        int abnormalYValues = 0;
+
+        // find the average x-value
+        double averageXValue = xValueChart.Values.Average();
+        int abnormalXValues = 0;
+
+        foreach(KeyValuePair<int, int> entry in yValueChart) // find the number of below average y-value occurences by row (panhandles)
+        {
+            if (entry.Value < averageYValue / 1.5)
+            {
+                abnormalYValues++;
+            }
+        }
+        Debug.Log("Abnormal y-values: " + abnormalYValues + "\ty-values: " + yValueChart.Count + "\tFraction: " + (double) abnormalYValues / yValueChart.Count); // debug
+
+        foreach(KeyValuePair<int, int> entry in xValueChart) // find the number of below average y-value occurences by row (panhandles)
+        {
+            if (entry.Value < averageXValue / 1.5)
+            {
+                abnormalXValues++;
+            }
+        }
+        Debug.Log("Abnormal x-values: " + abnormalXValues + "\tx-values: " + xValueChart.Count + "\tFraction: " + (double) abnormalXValues / xValueChart.Count); // debug
+        
+        double protrusionCoefficient = Mathf.Max((float) abnormalYValues / yValueChart.Count, (float) abnormalXValues / xValueChart.Count); // determine the location of the panhandle, whether north-south or east-west
+        if (protrusionCoefficient > 0.2) // if more than 20% of the values are considered "abnormal"
+            return protrusionCoefficient; // the more protruded the state is, the higher the coefficient
+        else { return 0; } // returns 0 if not protruded
     }
 
     private int ToGridCoordinateX(float input) {
