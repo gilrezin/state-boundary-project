@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -108,30 +109,56 @@ public class GameManager : MonoBehaviour {
             int baseXCoordinate = int.Parse(pixel[..pixel.IndexOf(", ")]);
             int baseYCoordinate = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
             int numOfNeighbors = 0;
+
+
+            adjustedXCoordinate = baseXCoordinate - 1;
+
             try {
-                adjustedXCoordinate = baseXCoordinate - 1;
+
                 if (pixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
                     numOfNeighbors++;
+                else if (World.world[adjustedXCoordinate, baseYCoordinate] == null) {
+                    numOfNeighbors++;
+                }
             }
-            catch { }
+            catch { numOfNeighbors++; }
+
+
+            adjustedXCoordinate = baseXCoordinate + 1;
             try {
-                adjustedXCoordinate = baseXCoordinate + 1;
+
                 if (pixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
                     numOfNeighbors++;
+                else if (World.world[adjustedXCoordinate, baseYCoordinate] == null) {
+                    numOfNeighbors++;
+                }
             }
-            catch { }
+            catch { numOfNeighbors++; }
+
+
+            adjustedYCoordinate = baseYCoordinate - 1;
             try {
-                adjustedYCoordinate = baseYCoordinate - 1;
+
                 if (pixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
                     numOfNeighbors++;
+                else if (World.world[baseXCoordinate, adjustedYCoordinate] == null) {
+                    numOfNeighbors++;
+                }
             }
-            catch { }
+            catch { numOfNeighbors++; }
+
+            adjustedYCoordinate = baseYCoordinate + 1;
+
             try {
-                adjustedYCoordinate = baseYCoordinate + 1;
+
                 if (pixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
                     numOfNeighbors++;
+                else if (World.world[baseXCoordinate, adjustedYCoordinate] == null) {
+                    numOfNeighbors++;
+                }
             }
-            catch { }
+            catch { numOfNeighbors++; }
+
             if (numOfNeighbors != 4) {
                 borders.Add(pixel);
                 GameObject.Find(pixel).GetComponent<SpriteRenderer>().color = (World.world[baseXCoordinate, baseYCoordinate].GetLandColor() + Color.black) / 2;
