@@ -1,12 +1,10 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 using System.Linq;
 
 public class GameManager : MonoBehaviour {
-    public GameObject SelectedPixels;
-    private List<string> pixels;
+    private List<string> selectedPixels;
     private List<string> borders;
     public DisplayMap displayMapScript;
     // Start is called before the first frame update
@@ -77,14 +75,16 @@ public class GameManager : MonoBehaviour {
     public void CalculateStability() {
         GetSelectedPixels();
         displayMapScript.DisplayLandColor();
-
         FindBorders();
+
+
         Debug.Log("Fractured: " + IsFractured());
         Debug.Log("Elongated: " + IsElongated());
         Debug.Log("Oil: " + OilBoundry());
         Debug.Log("Wood: " + WoodBoundry());
         Debug.Log("Gold: " + GoldBoundry());
         Debug.Log("Protruded: " + IsProtruded());
+        Debug.Log("Number of Nationalities: " + NumberOfEthnicities());
     }
 
 
@@ -92,11 +92,11 @@ public class GameManager : MonoBehaviour {
 
 
     public void GetSelectedPixels() {
-        pixels = new();
+        selectedPixels = new();
         foreach (Pixel pixel in World.world) {
             if (pixel == null || !pixel.drewOn)
                 continue;
-            pixels.Add(pixel.Coordinate[0] + ", " + pixel.Coordinate[1]);
+            selectedPixels.Add(pixel.Coordinate[0] + ", " + pixel.Coordinate[1]);
         }
     }
 
@@ -105,7 +105,7 @@ public class GameManager : MonoBehaviour {
 
     public void FindBorders() {
         borders = new();
-        foreach (string pixel in pixels) {
+        foreach (string pixel in selectedPixels) {
             // search for this pixel's immediate neighbors. Add them to the list if they are not a duplicate
             int adjustedXCoordinate;
             int adjustedYCoordinate;
@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviour {
 
             try {
 
-                if (pixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
+                if (selectedPixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
                     numOfNeighbors++;
                 else if (World.world[adjustedXCoordinate, baseYCoordinate] == null) {
                     numOfNeighbors++;
@@ -130,7 +130,7 @@ public class GameManager : MonoBehaviour {
             adjustedXCoordinate = baseXCoordinate + 1;
             try {
 
-                if (pixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
+                if (selectedPixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
                     numOfNeighbors++;
                 else if (World.world[adjustedXCoordinate, baseYCoordinate] == null) {
                     numOfNeighbors++;
@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour {
             adjustedYCoordinate = baseYCoordinate - 1;
             try {
 
-                if (pixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
+                if (selectedPixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
                     numOfNeighbors++;
                 else if (World.world[baseXCoordinate, adjustedYCoordinate] == null) {
                     numOfNeighbors++;
@@ -154,7 +154,7 @@ public class GameManager : MonoBehaviour {
 
             try {
 
-                if (pixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
+                if (selectedPixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
                     numOfNeighbors++;
                 else if (World.world[baseXCoordinate, adjustedYCoordinate] == null) {
                     numOfNeighbors++;
@@ -186,7 +186,7 @@ public class GameManager : MonoBehaviour {
                 borderOilCount++;
             }
         }
-        foreach (string pixel in pixels) {
+        foreach (string pixel in selectedPixels) {
             if (World.world[int.Parse(pixel[..pixel.IndexOf(", ")]), int.Parse(pixel[(pixel.IndexOf(", ") + 1)..])].HasOil())
                 totalOilCount++;
         }
@@ -209,7 +209,7 @@ public class GameManager : MonoBehaviour {
             }
         }
 
-        foreach (string pixel in pixels) {
+        foreach (string pixel in selectedPixels) {
             if (World.world[int.Parse(pixel[..pixel.IndexOf(", ")]), int.Parse(pixel[(pixel.IndexOf(", ") + 1)..])].HasGold())
                 totalGoldCount++;
         }
@@ -236,7 +236,7 @@ public class GameManager : MonoBehaviour {
             }
         }
 
-        foreach (string pixel in pixels) {
+        foreach (string pixel in selectedPixels) {
             if (World.world[int.Parse(pixel[..pixel.IndexOf(", ")]), int.Parse(pixel[(pixel.IndexOf(", ") + 1)..])].HasWood())
                 totalWoodCount++;
         }
@@ -254,7 +254,7 @@ public class GameManager : MonoBehaviour {
         // determine if borders are fractured - create an array of contiguous pixels
         List<string> contiguousPixels = new() {
             // find the first pixel in the script, then find its neighbors
-            pixels[0]
+            selectedPixels[0]
         };
         // go to the next pixel in the list, then find its neighbors. If its neighbors are already in the list, then do not add them
         int adjustedXCoordinate;
@@ -267,14 +267,14 @@ public class GameManager : MonoBehaviour {
             try {
                 adjustedXCoordinate = baseXCoordinate - 1;
                 if (!contiguousPixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
-                    if (pixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
+                    if (selectedPixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
                         contiguousPixels.Add(adjustedXCoordinate + ", " + baseYCoordinate);
             }
             catch { }
             try {
                 adjustedXCoordinate = baseXCoordinate + 1;
                 if (!contiguousPixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
-                    if (pixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate)) {
+                    if (selectedPixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate)) {
                         contiguousPixels.Add(adjustedXCoordinate + ", " + baseYCoordinate);
                     }
             }
@@ -282,23 +282,23 @@ public class GameManager : MonoBehaviour {
             try {
                 adjustedYCoordinate = baseYCoordinate - 1;
                 if (!contiguousPixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
-                    if (pixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
+                    if (selectedPixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
                         contiguousPixels.Add(baseXCoordinate + ", " + adjustedYCoordinate);
             }
             catch { }
             try {
                 adjustedYCoordinate = baseYCoordinate + 1;
                 if (!contiguousPixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
-                    if (pixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
+                    if (selectedPixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
                         contiguousPixels.Add(baseXCoordinate + ", " + adjustedYCoordinate);
             }
             catch { }
         }
-        if (pixels.Count == contiguousPixels.Count) {
-            return contiguousPixels.Count / pixels.Count;
+        if (selectedPixels.Count == contiguousPixels.Count) {
+            return contiguousPixels.Count / selectedPixels.Count;
         }
         else {
-            return (double)((double)contiguousPixels.Count) / ((double)pixels.Count);
+            return (double)((double)contiguousPixels.Count) / ((double)selectedPixels.Count);
         }
     }
 
@@ -314,7 +314,7 @@ public class GameManager : MonoBehaviour {
         int largestX = 0;
         int smallestY = int.MaxValue;
         int largestY = 0;
-        foreach (string g in pixels) // runs through every pixel for their x and y values to find the mins and maxes
+        foreach (string g in selectedPixels) // runs through every pixel for their x and y values to find the mins and maxes
         {
             int xCoordinate = int.Parse(g[..g.IndexOf(", ")]);
             int yCoordinate = int.Parse(g[(g.IndexOf(", ") + 1)..]);
@@ -341,12 +341,15 @@ public class GameManager : MonoBehaviour {
     }
 
 
+
+
+
     public double IsProtruded()
     {
         // make Dictionaries that contain x-values and y-values, and the associated number of times they appear
-        Dictionary<int, int> yValueChart = new Dictionary<int, int>();
-        Dictionary<int, int> xValueChart = new Dictionary<int, int>();
-        foreach (string pixel in pixels) { // for every pixel, obtain its y and x-values
+        Dictionary<int, int> yValueChart = new();
+        Dictionary<int, int> xValueChart = new();
+        foreach (string pixel in selectedPixels) { // for every pixel, obtain its y and x-values
             int xCoordinate = int.Parse(pixel[..pixel.IndexOf(", ")]);
             int yCoordinate = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
             if (!yValueChart.ContainsKey(yCoordinate)) // check if the y-value exists in the dictionary. If it doesn't add it
@@ -397,9 +400,36 @@ public class GameManager : MonoBehaviour {
         else { return 0; } // returns 0 if not protruded
     }
 
+
+
+
+    public int NumberOfEthnicities() {
+        List<string> ethincities = new();
+        foreach (string pixel in selectedPixels) {
+            int x = int.Parse(pixel[..pixel.IndexOf(", ")]);
+            int y = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
+            if (ethincities.Contains(World.world[x, y].EthinictyID)) {
+                continue;
+            }
+            ethincities.Add(World.world[x, y].EthinictyID);
+        }
+
+        return ethincities.Count;
+    }
+
+
+
+
+
+
     private int ToGridCoordinateX(float input) {
         return (int)(Mathf.Abs((input - 4.9f) * 15));
     }
+
+
+
+
+
 
     private int ToGridCoordinateY(float input) {
         return (int)(Mathf.Abs((input + 8.733333f) * 15));
