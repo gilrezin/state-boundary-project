@@ -110,17 +110,60 @@ public class GameManager : MonoBehaviour {
         FindBorders();
 
 
-        Debug.Log("Fractured: " + IsFractured());
-        Debug.Log("Elongated: " + IsElongated());
-        Debug.Log("Oil: " + OilBoundry());
-        Debug.Log("Wood: " + WoodBoundry());
-        Debug.Log("Gold: " + GoldBoundry());
-        Debug.Log("Protruded: " + IsProtruded());
-        Debug.Log("Number of Nationalities: " + NumberOfEthnicities());
         int stability = 100;
-        DisplayStabilityGUI(stability);
+        DisplayStabilityGUI(stability, IsFractured(), IsElongated(), IsProtruded(), OilBoundry(), GoldBoundry(), WoodBoundry(), NumberOfEthnicities(), OilDensity(), GoldDensity(), WoodDensity());
     }
 
+
+
+
+    public void DisplayStabilityGUI(double stability, double isFractured, bool isElongated, double isProtruded, double oilBoundry, double goldBoundry, double woodBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity) // displays the stability GUI and updates the text
+    {
+        AssignBodyText(isFractured, isElongated, isProtruded, oilBoundry, goldBoundry, woodBoundry, numberOfEthnicities, oilDensity, goldDensity, woodDensity);
+        stabilityGUIPageNumber = 0;
+        header.text = "This country is " + stability + "% stable.";
+        try {
+            body.text = bodyTexts[0];
+            if (bodyTexts.Count == 1)
+                footer.text = "Press space to exit (1/1)";
+            else
+                footer.text = "Press space to continue (1/" + (bodyTexts.Count) + ")";
+        }
+        catch {
+            body.text = "no problems found! :)";
+            footer.text = "Press space to exit";
+        }
+        stabilityGUIBackground.SetActive(true);
+        stabilityGUI.SetActive(true);
+    }
+
+
+
+
+
+    public void AssignBodyText(double isFractured, bool isElongated, double isProtruded, double oilBoundry, double goldBoundry, double woodBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity) {
+        bodyTexts.Clear();
+        if (isFractured < .9) // check if state is fractured
+            bodyTexts.Add("Fragmented states create isolation from the mainland, sometimes leading to autonomy or devolution. Also, it is more difficult to evenly spread resources to all parts of the state. Isolation and differences add up as centrifugal forces and work to divide the states. (" + Mathf.Round((float)((1d / isFractured) * 1000d)) / 10d + "%)");
+        if (isElongated) // check if state is elongated
+            bodyTexts.Add("Elongated states will separate one side from another creating isolation of the two groups. Additionally from a military perspective, long state borders are exposed more and require military enforcement across borders. Isolation and differences add up as centrifugal forces and work to divide the states.");
+        if (isProtruded > 0.25) // check if state is protruded
+            bodyTexts.Add("A protrusion can cause unnecessary disputes over its territory. Additionally smooth communication may be disturbed. This can isolate the mainland and the porruption. Isolation and differences add up as centrifugal forces and work to divide the states. (" + Mathf.Round((float)(isProtruded * 1000f)) / 10d + "%)");
+        if (oilBoundry > 0.1) // check if state has a resource crossing a border
+            bodyTexts.Add("Oil crosses your state border. Valuable resources come with competition. States may have allocational boundary disputes to obtain as much of the resources. The constant redrawing and ruling of boundaries can create unnecessary frustration and paranoia. (" + Mathf.Round((float)(oilBoundry * 1000f)) / 10d + "%)");
+        if (oilDensity < .1)
+            bodyTexts.Add("A lack of oil in your state can increase your dependance on other countries. States may have decreased barginning power, and increased reliance on the global market. (" + Mathf.Round((float)(oilDensity * 1000f)) / 10d + "%)");
+        if (goldBoundry > 0.1) // check if state has a resource crossing a border
+            bodyTexts.Add("Gold crosses your state border. Valuable resources come with competition. States may have allocational boundary disputes to obtain as much of the resources. The constant redrawing and ruling of boundaries can create unnecessary frustration and paranoia. (" + Mathf.Round((float)(goldBoundry * 1000f)) / 10d + "%)");
+        if (goldDensity < .1)
+            bodyTexts.Add("A lack of gold in your state can increase your dependance on other countries. States may have decreased barginning power, and increased reliance on the global market. (" + Mathf.Round((float)(goldDensity * 1000f)) / 10d + "%)");
+        if (woodBoundry > 0.1) // check if state has a resource crossing a border
+            bodyTexts.Add("Wood crosses your state border. Valuable resources come with competition. States may have allocational boundary disputes to obtain as much of the resources. The constant redrawing and ruling of boundaries can create unnecessary frustration and paranoia. (" + Mathf.Round((float)(woodBoundry * 1000f)) / 10d + "%)");
+        if (woodDensity < .33)
+            bodyTexts.Add("A lack of wood in your state can increase your dependance on other countries. States may have decreased barginning power, and increased reliance on the global market. (" + Mathf.Round((float)(woodDensity * 1000f)) / 10d + "%)");
+        if (numberOfEthnicities > 2)
+            bodyTexts.Add("More than 3 nationalities support the growth of centrifugal forces. The cultural differences create division and ideas of self determination in one of those groups can lead to war to be granted autonomy. Isolation and differences add up as centrifugal forces and work to divide the states. (Nationalities Count: " + numberOfEthnicities + ")");
+    }
 
 
 
@@ -133,6 +176,8 @@ public class GameManager : MonoBehaviour {
             selectedPixels.Add(pixel.Coordinate[0] + ", " + pixel.Coordinate[1]);
         }
     }
+
+
 
 
 
@@ -228,7 +273,42 @@ public class GameManager : MonoBehaviour {
         return (double)borderOilCount / (double)totalOilCount;
     }
 
+    public double GoldDensity() {
+        int goldCount = 0;
+        foreach (string pixel in selectedPixels) {
+            int x = int.Parse(pixel[..pixel.IndexOf(", ")]);
+            int y = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
+            if (World.world[x, y].HasGold()) {
+                goldCount++;
+            }
+        }
+        return (double) goldCount / (double) selectedPixels.Count;
+    } 
 
+    public double OilDensity() {
+        int oilCount = 0;
+        foreach (string pixel in selectedPixels) {
+            int x = int.Parse(pixel[..pixel.IndexOf(", ")]);
+            int y = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
+            if (World.world[x, y].HasOil()) {
+                oilCount++;
+            }
+        }
+        return (double) oilCount / (double) selectedPixels.Count;
+
+    }
+
+    public double WoodDensity() {
+        int woodCount = 0;
+        foreach (string pixel in selectedPixels) {
+            int x = int.Parse(pixel[..pixel.IndexOf(", ")]);
+            int y = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
+            if (World.world[x, y].HasWood()) {
+                woodCount++;
+            }
+        }
+        return (double) woodCount / (double) selectedPixels.Count;
+    }
 
     public double GoldBoundry() {
         if (borders.Count == 0)
@@ -429,9 +509,7 @@ public class GameManager : MonoBehaviour {
         //Debug.Log("Abnormal x-values: " + abnormalXValues + "\tx-values: " + xValueChart.Count + "\tFraction: " + (double) abnormalXValues / xValueChart.Count); // debug
         
         double protrusionCoefficient = Mathf.Max((float) abnormalYValues / yValueChart.Count, (float) abnormalXValues / xValueChart.Count); // determine the location of the panhandle, whether north-south or east-west
-        if (protrusionCoefficient > 0.25) // if more than 25% of the values are considered "abnormal"
             return protrusionCoefficient; // the more protruded the state is, the higher the coefficient
-        else { return 0; } // returns 0 if not protruded
     }
 
 
@@ -469,37 +547,5 @@ public class GameManager : MonoBehaviour {
         return (int)(Mathf.Abs((input + 8.733333f) * 15));
     }
 
-    public void DisplayStabilityGUI(int stability) // displays the stability GUI and updates the text
-    {
-        assignBodyText();
-        stabilityGUIPageNumber = 0;
-        header.text = "This country is " + stability + "% stable.";
-        try
-        {
-            body.text = bodyTexts[0];
-            if (bodyTexts.Count == 1)
-                footer.text = "Press space to exit (1/1)";
-            else
-                footer.text = "Press space to continue (1/" + (bodyTexts.Count) + ")";
-        } catch 
-        {
-            body.text = "no problems found! :)";
-            footer.text = "Press space to exit";
-        }
-        stabilityGUIBackground.SetActive(true);
-        stabilityGUI.SetActive(true);
-    }
-
-    public void assignBodyText()
-    {
-        bodyTexts.Clear();
-        if (IsFractured() < 1) // check if state is fractured
-            bodyTexts.Add("Fragmented states create isolation from the mainland, sometimes leading to autonomy or devolution. Also, it is more difficult to evenly spread resources to all parts of the state. Isolation and differences add up as centrifugal forces and work to divide the states.");
-        if (IsElongated()) // check if state is elongated
-            bodyTexts.Add("Elongated states will separate one side from another creating isolation of the two groups. Additionally from a military perspective, long state borders are exposed more and require military enforcement across borders. Isolation and differences add up as centrifugal forces and work to divide the states.");
-        /*if (IsProtruded > 0.25) // check if state is protruded
-            bodyTexts.Add()*/
-        /*if (OilBoundry > 0 || GoldBoundry > 0 || WoodBoundry > 0) // check if state has a resource crossing a border
-            bodyTexts.Add("");*/
-    }
+    
 }
