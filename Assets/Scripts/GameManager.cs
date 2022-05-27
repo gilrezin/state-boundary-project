@@ -27,8 +27,7 @@ public class GameManager : MonoBehaviour {
         // get mouse position
 
         // when mouse position is down, search for the nearest pixels within a radius and color them in
-        if (stabilityGUIBackground.activeSelf == false)
-        {
+        if (stabilityGUIBackground.activeSelf == false) {
             if (Input.GetKey(KeyCode.Mouse0)) {
 
                 Vector2 cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -38,6 +37,7 @@ public class GameManager : MonoBehaviour {
                     for (int y = positionY - 2; y < positionY + 2; y++) {
                         try {
                             World.world[x, y].drewOn = true;
+                            World.world[x, y].border = false;
                             if (World.currentView.Equals("LAND"))
                                 GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
                             else if (World.currentView.Equals("NATION"))
@@ -63,6 +63,7 @@ public class GameManager : MonoBehaviour {
                     for (int y = positionY - 2; y < positionY + 2; y++) {
                         try {
                             World.world[x, y].drewOn = false;
+                            World.world[x, y].border = false;
                             if (World.currentView.Equals("LAND"))
                                 GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
                             else if (World.currentView.Equals("NATION"))
@@ -78,26 +79,26 @@ public class GameManager : MonoBehaviour {
 
                     }
                 }
-            }    
-        } else
-        {
-             if (Input.GetKeyDown(KeyCode.Space)) // go to next page in stability explanation
-             {
-                 try
-                 {
+            }
+        }
+        else {
+            if (Input.GetKeyDown(KeyCode.Space)) // go to next page in stability explanation
+            {
+                try {
                     stabilityGUIPageNumber++;
                     body.text = bodyTexts[stabilityGUIPageNumber]; // change text
-                     if (bodyTexts.Count == stabilityGUIPageNumber + 1) // changes footer text depending if on the last slide
+                    if (bodyTexts.Count == stabilityGUIPageNumber + 1) // changes footer text depending if on the last slide
                         footer.text = "Press space to exit (" + (stabilityGUIPageNumber + 1) + "/" + (bodyTexts.Count) + ")";
                     else
                         footer.text = "Press space to continue (" + (stabilityGUIPageNumber + 1) + "/" + (bodyTexts.Count) + ")";
-                    
-                 } catch // close menu once reached end
-                 {
+
+                }
+                catch // close menu once reached end
+                {
                     stabilityGUIBackground.SetActive(false);
                     stabilityGUI.SetActive(false);
-                 }
-             }
+                }
+            }
         }
     }
 
@@ -120,33 +121,34 @@ public class GameManager : MonoBehaviour {
             displayMapScript.DisplayGoldColor();
 
 
-        DisplayStabilityGUI(IsFractured(), IsElongated(), IsProtruded(), OilBoundry(), GoldBoundry(), WoodBoundry(), NumberOfEthnicities(), OilDensity(), GoldDensity(), WoodDensity());
+        DisplayStabilityGUI(IsFractured(), IsElongated(), IsProtruded(), OilBoundry(), GoldBoundry(), WoodBoundry(), NumberOfEthnicities(), OilDensity(), GoldDensity(), WoodDensity(), CoastlinePercentage());
     }
 
 
 
 
-    public void DisplayStabilityGUI(double isFractured, bool isElongated, double isProtruded, double oilBoundry, double goldBoundry, double woodBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity) // displays the stability GUI and updates the text
+    public void DisplayStabilityGUI(double isFractured, bool isElongated, double isProtruded, double oilBoundry, double goldBoundry, double woodBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity, double coastlinePercentage) // displays the stability GUI and updates the text
     {
-        int numberOfFactors = 10;
+        int numberOfFactors = 11;
         double stability = 0;
-        stability += (1 - isFractured);
+        stability += isFractured;
         stability += isProtruded;
         stability += oilBoundry;
         stability += goldBoundry;
         stability += woodBoundry;
-        stability += oilDensity;
-        stability += goldDensity;
-        stability += woodDensity;
+        stability += (1 - oilDensity);
+        stability += (1 - goldDensity);
+        stability += (1 - woodDensity);
         stability += numberOfEthnicities * .2;
+        stability += coastlinePercentage;
         if (isElongated) {
-            stability += .75;
+            stability += .25;
         }
-        
+
 
         stability /= numberOfFactors;
-        stability = 1 - stability;
-        AssignBodyText(isFractured, isElongated, isProtruded, oilBoundry, goldBoundry, woodBoundry, numberOfEthnicities, oilDensity, goldDensity, woodDensity);
+
+        AssignBodyText(isFractured, isElongated, isProtruded, oilBoundry, goldBoundry, woodBoundry, numberOfEthnicities, oilDensity, goldDensity, woodDensity, coastlinePercentage);
         stabilityGUIPageNumber = 0;
         header.text = "This country is " + Mathf.Round((float)(stability * 1000f)) / 10d + "% stable.";
         try {
@@ -168,7 +170,7 @@ public class GameManager : MonoBehaviour {
 
 
 
-    public void AssignBodyText(double isFractured, bool isElongated, double isProtruded, double oilBoundry, double goldBoundry, double woodBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity) {
+    public void AssignBodyText(double isFractured, bool isElongated, double isProtruded, double oilBoundry, double goldBoundry, double woodBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity, double coastlinePercentage) {
         bodyTexts.Clear();
         if (isFractured < .9) // check if state is fractured
             bodyTexts.Add("Fragmented states create isolation from the mainland, sometimes leading to autonomy or devolution. Also, it is more difficult to evenly spread resources to all parts of the state. Isolation and differences add up as centrifugal forces and work to divide the states. (" + Mathf.Round((float)((1d - isFractured) * 1000d)) / 10d + "% of your country is fragmented)");
@@ -190,6 +192,8 @@ public class GameManager : MonoBehaviour {
             bodyTexts.Add("A lack of wood in your state can increase your dependance on other countries. States may have decreased barginning power, and increased reliance on the global market. (Only " + Mathf.Round((float)(woodDensity * 1000f)) / 10d + "% of your country has wood)");
         if (numberOfEthnicities > 2)
             bodyTexts.Add("More than 3 nationalities support the growth of centrifugal forces. The cultural differences create division and ideas of self determination in one of those groups can lead to war to be granted autonomy. Isolation and differences add up as centrifugal forces and work to divide the states. (There are " + numberOfEthnicities + " different nationalities in your country)");
+        if (coastlinePercentage < .1)
+            bodyTexts.Add("Your country does not have much coastline. Lack of coastline means limited access to world trade, and an inability to have a successful navy. (Only " + Mathf.Round((float)(coastlinePercentage * 1000f)) / 10d + "% of your coastline has water access)");
     }
 
 
@@ -201,10 +205,9 @@ public class GameManager : MonoBehaviour {
             if (pixel == null)
                 continue;
             if (!pixel.drewOn) {
-                pixel.border = false;
                 continue;
             }
-            
+
             selectedPixels.Add(pixel.Coordinate[0] + ", " + pixel.Coordinate[1]);
         }
     }
@@ -277,6 +280,9 @@ public class GameManager : MonoBehaviour {
                 borders.Add(pixel);
                 World.world[baseXCoordinate, baseYCoordinate].border = true;
             }
+            else {
+                World.world[baseXCoordinate, baseYCoordinate].border = false;
+            }
 
 
         }
@@ -319,6 +325,46 @@ public class GameManager : MonoBehaviour {
         return (double)borderOilCount / (double)totalOilCount;
     }
 
+    public double CoastlinePercentage() {
+        int coastCount = 0;
+
+        foreach (string pixel in selectedPixels) {
+            bool isCoast = false;
+            int x = int.Parse(pixel[..pixel.IndexOf(", ")]);
+            int y = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
+
+            try {
+                if (World.world[x - 1, y] == null)
+                    isCoast = true;
+            }
+            catch { }
+            try {
+                if (World.world[x + 1, y] == null)
+                    isCoast = true;
+            }
+            catch { }
+            try {
+                if (World.world[x, y - 1] == null)
+                    isCoast = true;
+            }
+            catch { }
+            try {
+                if (World.world[x, y + 1] == null)
+                    isCoast = true;
+            }
+            catch { }
+
+            if (isCoast)
+                coastCount++;
+
+        }
+        if (borders.Count == 0)
+            return 1;
+        else if ((double)coastCount / (double)(borders.Count / 2) >= 1)
+            return 1.1;
+        else return (double)coastCount / (double)(borders.Count / 2d);
+    }
+
     public double GoldDensity() {
         int goldCount = 0;
         foreach (string pixel in selectedPixels) {
@@ -330,8 +376,8 @@ public class GameManager : MonoBehaviour {
         }
         if (((double)goldCount / (double)selectedPixels.Count).Equals(double.NaN))
             return 0;
-        return (double) goldCount / (double) selectedPixels.Count;
-    } 
+        return (double)goldCount / (double)selectedPixels.Count;
+    }
 
     public double OilDensity() {
         int oilCount = 0;
@@ -345,7 +391,7 @@ public class GameManager : MonoBehaviour {
 
         if (((double)oilCount / (double)oilCount).Equals(double.NaN))
             return 0;
-        return (double) oilCount / (double) selectedPixels.Count;
+        return (double)oilCount / (double)selectedPixels.Count;
 
     }
 
@@ -360,7 +406,7 @@ public class GameManager : MonoBehaviour {
         }
         if (((double)woodCount / (double)woodCount).Equals(double.NaN))
             return 0;
-        return (double) woodCount / (double) selectedPixels.Count;
+        return (double)woodCount / (double)selectedPixels.Count;
     }
 
     public double GoldBoundry() {
@@ -514,8 +560,7 @@ public class GameManager : MonoBehaviour {
 
 
 
-    public double IsProtruded()
-    {
+    public double IsProtruded() {
         // make Dictionaries that contain x-values and y-values, and the associated number of times they appear
         Dictionary<int, int> yValueChart = new();
         Dictionary<int, int> xValueChart = new();
@@ -525,7 +570,8 @@ public class GameManager : MonoBehaviour {
             if (!yValueChart.ContainsKey(yCoordinate)) // check if the y-value exists in the dictionary. If it doesn't add it
             {
                 yValueChart.Add(yCoordinate, 1);
-            } else // if it does exist, append it by 1
+            }
+            else // if it does exist, append it by 1
             {
                 yValueChart[yCoordinate]++;
             }
@@ -533,7 +579,8 @@ public class GameManager : MonoBehaviour {
             if (!xValueChart.ContainsKey(xCoordinate)) // check if the x-value exists in the dictionary. If it doesn't add it
             {
                 xValueChart.Add(xCoordinate, 1);
-            } else // if it does exist, append it by 1
+            }
+            else // if it does exist, append it by 1
             {
                 xValueChart[xCoordinate]++;
             }
@@ -546,26 +593,24 @@ public class GameManager : MonoBehaviour {
         double averageXValue = xValueChart.Values.Average();
         int abnormalXValues = 0;
 
-        foreach(KeyValuePair<int, int> entry in yValueChart) // find the number of below average y-value occurences by row (panhandles)
+        foreach (KeyValuePair<int, int> entry in yValueChart) // find the number of below average y-value occurences by row (panhandles)
         {
-            if (entry.Value < averageYValue / 1.5)
-            {
+            if (entry.Value < averageYValue / 1.5) {
                 abnormalYValues++;
             }
         }
         //Debug.Log("Abnormal y-values: " + abnormalYValues + "\ty-values: " + yValueChart.Count + "\tFraction: " + (double) abnormalYValues / yValueChart.Count); // debug
 
-        foreach(KeyValuePair<int, int> entry in xValueChart) // find the number of below average y-value occurences by row (panhandles)
+        foreach (KeyValuePair<int, int> entry in xValueChart) // find the number of below average y-value occurences by row (panhandles)
         {
-            if (entry.Value < averageXValue / 1.5)
-            {
+            if (entry.Value < averageXValue / 1.5) {
                 abnormalXValues++;
             }
         }
         //Debug.Log("Abnormal x-values: " + abnormalXValues + "\tx-values: " + xValueChart.Count + "\tFraction: " + (double) abnormalXValues / xValueChart.Count); // debug
-        
-        double protrusionCoefficient = Mathf.Max((float) abnormalYValues / yValueChart.Count, (float) abnormalXValues / xValueChart.Count); // determine the location of the panhandle, whether north-south or east-west
-            return protrusionCoefficient; // the more protruded the state is, the higher the coefficient
+
+        double protrusionCoefficient = Mathf.Max((float)abnormalYValues / yValueChart.Count, (float)abnormalXValues / xValueChart.Count); // determine the location of the panhandle, whether north-south or east-west
+        return protrusionCoefficient; // the more protruded the state is, the higher the coefficient
     }
 
 
@@ -603,5 +648,5 @@ public class GameManager : MonoBehaviour {
         return (int)(Mathf.Abs((input + 8.733333f) * 15));
     }
 
-    
+
 }
