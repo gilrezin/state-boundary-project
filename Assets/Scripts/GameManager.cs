@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour {
     public TextMeshProUGUI header;
     public TextMeshProUGUI body;
     public TextMeshProUGUI footer;
-    private List<String> bodyTexts = new();
+    private List<string> bodyTexts = new();
     private int stabilityGUIPageNumber = 0;
     // Start is called before the first frame update
     void Start() {
