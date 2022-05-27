@@ -130,34 +130,24 @@ public class GameManager : MonoBehaviour {
     {
         int numberOfFactors = 10;
         double stability = 0;
-        stability += (1-isFractured);
-        Debug.Log(stability);
+        stability += (1-isFractured)
         stability += isProtruded;
-        Debug.Log(stability);
         stability += oilBoundry;
-        Debug.Log(stability);
         stability += goldBoundry;
-        Debug.Log(stability);
         stability += woodBoundry;
-        Debug.Log(stability);
         stability += oilDensity;
-        Debug.Log(stability);
         stability += goldDensity;
-        Debug.Log(stability);
         stability += woodDensity;
-        Debug.Log(stability);
         stability += numberOfEthnicities * .2;
-        Debug.Log(stability);
         if (isElongated) {
             stability += .75;
         }
-        Debug.Log(stability);
+        
 
         stability /= numberOfFactors;
         stability = 1 - stability;
         AssignBodyText(isFractured, isElongated, isProtruded, oilBoundry, goldBoundry, woodBoundry, numberOfEthnicities, oilDensity, goldDensity, woodDensity);
         stabilityGUIPageNumber = 0;
-        Debug.Log(stability);
         header.text = "This country is " + Mathf.Round((float)(stability * 1000f)) / 10d + "% stable.";
         try {
             body.text = bodyTexts[0];
