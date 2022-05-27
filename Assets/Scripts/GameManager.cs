@@ -3,12 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
     public GameObject SelectedPixels;
     private List<string> pixels;
     private List<string> borders;
     public DisplayMap displayMapScript;
+    public GameObject stabilityGUIBackground;
+    public GameObject stabilityGUI;
+    public TextMeshProUGUI header;
+    public TextMeshProUGUI body;
+    public TextMeshProUGUI footer;
+    private List<String> bodyTexts = new();
+    private int stabilityGUIPageNumber = 0;
     // Start is called before the first frame update
     void Start() {
         Screen.SetResolution(1077, 606, false);
@@ -19,55 +29,77 @@ public class GameManager : MonoBehaviour {
         // get mouse position
 
         // when mouse position is down, search for the nearest pixels within a radius and color them in
-        if (Input.GetKey(KeyCode.Mouse0)) {
+        if (stabilityGUIBackground.activeSelf == false)
+        {
+            if (Input.GetKey(KeyCode.Mouse0)) {
 
-            Vector2 cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            int positionX = ToGridCoordinateX(cameraPosition.y);
-            int positionY = ToGridCoordinateY(cameraPosition.x);
-            for (int x = positionX - 2; x < positionX + 2; x++) {
-                for (int y = positionY - 2; y < positionY + 2; y++) {
-                    try {
-                        World.world[x, y].drewOn = true;
-                        if (World.currentView.Equals("LAND"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
-                        else if (World.currentView.Equals("NATION"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetEthnicityColor();
-                        else if (World.currentView.Equals("WOOD"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetWoodColor();
-                        else if (World.currentView.Equals("OIL"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetOilColor();
-                        else if (World.currentView.Equals("GOLD"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor();
+                Vector2 cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                int positionX = ToGridCoordinateX(cameraPosition.y);
+                int positionY = ToGridCoordinateY(cameraPosition.x);
+                for (int x = positionX - 2; x < positionX + 2; x++) {
+                    for (int y = positionY - 2; y < positionY + 2; y++) {
+                        try {
+                            World.world[x, y].drewOn = true;
+                            if (World.currentView.Equals("LAND"))
+                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
+                            else if (World.currentView.Equals("NATION"))
+                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetEthnicityColor();
+                            else if (World.currentView.Equals("WOOD"))
+                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetWoodColor();
+                            else if (World.currentView.Equals("OIL"))
+                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetOilColor();
+                            else if (World.currentView.Equals("GOLD"))
+                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor();
+                        }
+                        catch { }
+
                     }
-                    catch { }
-
                 }
             }
-        }
 
-        else if (Input.GetKey(KeyCode.Mouse1)) {
-            Vector2 cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            int positionX = ToGridCoordinateX(cameraPosition.y);
-            int positionY = ToGridCoordinateY(cameraPosition.x);
-            for (int x = positionX - 2; x < positionX + 2; x++) {
-                for (int y = positionY - 2; y < positionY + 2; y++) {
-                    try {
-                        World.world[x, y].drewOn = false;
-                        if (World.currentView.Equals("LAND"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
-                        else if (World.currentView.Equals("NATION"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetEthnicityColor();
-                        else if (World.currentView.Equals("WOOD"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetWoodColor();
-                        else if (World.currentView.Equals("OIL"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetOilColor();
-                        else if (World.currentView.Equals("GOLD"))
-                            GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor();
+            else if (Input.GetKey(KeyCode.Mouse1)) {
+                Vector2 cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                int positionX = ToGridCoordinateX(cameraPosition.y);
+                int positionY = ToGridCoordinateY(cameraPosition.x);
+                for (int x = positionX - 2; x < positionX + 2; x++) {
+                    for (int y = positionY - 2; y < positionY + 2; y++) {
+                        try {
+                            World.world[x, y].drewOn = false;
+                            if (World.currentView.Equals("LAND"))
+                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
+                            else if (World.currentView.Equals("NATION"))
+                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetEthnicityColor();
+                            else if (World.currentView.Equals("WOOD"))
+                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetWoodColor();
+                            else if (World.currentView.Equals("OIL"))
+                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetOilColor();
+                            else if (World.currentView.Equals("GOLD"))
+                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor();
+                        }
+                        catch { }
+
                     }
-                    catch { }
-
                 }
-            }
+            }    
+        } else
+        {
+             if (Input.GetKeyDown(KeyCode.Space)) // go to next page in stability explanation
+             {
+                 try
+                 {
+                    stabilityGUIPageNumber++;
+                    body.text = bodyTexts[stabilityGUIPageNumber]; // change text
+                     if (bodyTexts.Count == stabilityGUIPageNumber + 1) // changes footer text depending if on the last slide
+                        footer.text = "Press space to exit (" + (stabilityGUIPageNumber + 1) + "/" + (bodyTexts.Count) + ")";
+                    else
+                        footer.text = "Press space to continue (" + (stabilityGUIPageNumber + 1) + "/" + (bodyTexts.Count) + ")";
+                    
+                 } catch // close menu once reached end
+                 {
+                    stabilityGUIBackground.SetActive(false);
+                    stabilityGUI.SetActive(false);
+                 }
+             }
         }
     }
 
@@ -85,6 +117,8 @@ public class GameManager : MonoBehaviour {
         Debug.Log("Wood: " + WoodBoundry());
         Debug.Log("Gold: " + GoldBoundry());
         Debug.Log("Protruded: " + IsProtruded());
+        int stability = 100;
+        DisplayStabilityGUI(stability);
     }
 
 
@@ -295,9 +329,11 @@ public class GameManager : MonoBehaviour {
             catch { }
         }
         if (pixels.Count == contiguousPixels.Count) {
+            //Debug.Log("is not fractured");
             return contiguousPixels.Count / pixels.Count;
         }
         else {
+            //Debug.Log("is fractured");
             return (double)((double)contiguousPixels.Count) / ((double)pixels.Count);
         }
     }
@@ -380,7 +416,7 @@ public class GameManager : MonoBehaviour {
                 abnormalYValues++;
             }
         }
-        Debug.Log("Abnormal y-values: " + abnormalYValues + "\ty-values: " + yValueChart.Count + "\tFraction: " + (double) abnormalYValues / yValueChart.Count); // debug
+        //Debug.Log("Abnormal y-values: " + abnormalYValues + "\ty-values: " + yValueChart.Count + "\tFraction: " + (double) abnormalYValues / yValueChart.Count); // debug
 
         foreach(KeyValuePair<int, int> entry in xValueChart) // find the number of below average y-value occurences by row (panhandles)
         {
@@ -389,10 +425,10 @@ public class GameManager : MonoBehaviour {
                 abnormalXValues++;
             }
         }
-        Debug.Log("Abnormal x-values: " + abnormalXValues + "\tx-values: " + xValueChart.Count + "\tFraction: " + (double) abnormalXValues / xValueChart.Count); // debug
+        //Debug.Log("Abnormal x-values: " + abnormalXValues + "\tx-values: " + xValueChart.Count + "\tFraction: " + (double) abnormalXValues / xValueChart.Count); // debug
         
         double protrusionCoefficient = Mathf.Max((float) abnormalYValues / yValueChart.Count, (float) abnormalXValues / xValueChart.Count); // determine the location of the panhandle, whether north-south or east-west
-        if (protrusionCoefficient > 0.2) // if more than 20% of the values are considered "abnormal"
+        if (protrusionCoefficient > 0.25) // if more than 25% of the values are considered "abnormal"
             return protrusionCoefficient; // the more protruded the state is, the higher the coefficient
         else { return 0; } // returns 0 if not protruded
     }
@@ -403,5 +439,39 @@ public class GameManager : MonoBehaviour {
 
     private int ToGridCoordinateY(float input) {
         return (int)(Mathf.Abs((input + 8.733333f) * 15));
+    }
+
+    public void DisplayStabilityGUI(int stability) // displays the stability GUI and updates the text
+    {
+        assignBodyText();
+        stabilityGUIPageNumber = 0;
+        header.text = "This country is " + stability + "% stable.";
+        try
+        {
+            body.text = bodyTexts[0];
+            if (bodyTexts.Count == 1)
+                footer.text = "Press space to exit (1/1)";
+            else
+                footer.text = "Press space to continue (1/" + (bodyTexts.Count) + ")";
+        } catch 
+        {
+            body.text = "no problems found! :)";
+            footer.text = "Press space to exit";
+        }
+        stabilityGUIBackground.SetActive(true);
+        stabilityGUI.SetActive(true);
+    }
+
+    public void assignBodyText()
+    {
+        bodyTexts.Clear();
+        if (IsFractured() < 1) // check if state is fractured
+            bodyTexts.Add("Fragmented states create isolation from the mainland, sometimes leading to autonomy or devolution. Also, it is more difficult to evenly spread resources to all parts of the state. Isolation and differences add up as centrifugal forces and work to divide the states.");
+        if (IsElongated()) // check if state is elongated
+            bodyTexts.Add("Elongated states will separate one side from another creating isolation of the two groups. Additionally from a military perspective, long state borders are exposed more and require military enforcement across borders. Isolation and differences add up as centrifugal forces and work to divide the states.");
+        /*if (IsProtruded > 0.25) // check if state is protruded
+            bodyTexts.Add()*/
+        /*if (OilBoundry > 0 || GoldBoundry > 0 || WoodBoundry > 0) // check if state has a resource crossing a border
+            bodyTexts.Add("");*/
     }
 }
