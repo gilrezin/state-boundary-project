@@ -32,10 +32,26 @@ public class Buttons : MonoBehaviour {
 
     public void OnClearButtonPress() {
         displayMap.ClearSelection();
+        if (World.currentView.Equals("LAND"))
+            displayMap.DisplayLandColor();
+        else if (World.currentView.Equals("NATION"))
+            displayMap.DisplayEthnicityColor();
+        else if (World.currentView.Equals("WOOD"))
+            displayMap.DisplayWoodColor();
+        else if (World.currentView.Equals("OIL"))
+            displayMap.DisplayOilColor();
+        else if (World.currentView.Equals("GOLD"))
+            displayMap.DisplayGoldColor();
     }
 
     public void CalculateButtonPress() {
         gameManager.CalculateStability();
+    }
+
+    public void ViewBorders() {
+        gameManager.GetSelectedPixels();
+        gameManager.FindBorders();
+
     }
 
 }

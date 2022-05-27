@@ -52,9 +52,10 @@ public class  Pixel {
         else
             color = new Color32(145, 187, 150, 255);
 
-        if (drewOn == true)
-            return (color + GetSelectedColor()) / 2;
-        else
+        if (drewOn)
+            color =  (color + GetSelectedColor()) / 2;
+        if (border)
+            color = (color + Color.black) / 2;
             return color;
     }
 
@@ -71,9 +72,10 @@ public class  Pixel {
         else
             color = new Color32(145, 187, 150, 255);
 
-        if (drewOn == true)
-            return (color + GetSelectedColor()) / 2;
-        else
+        if (drewOn)
+            color = (color + GetSelectedColor()) / 2;
+        if (border)
+            color = (color + Color.black) / 2;
             return color;
     }
 
@@ -92,9 +94,10 @@ public class  Pixel {
         else
             color = new Color32(145, 187, 150, 255);
 
-        if (drewOn == true)
-            return (color + GetSelectedColor()) / 2;
-        else
+        if (drewOn)
+            color = (color + GetSelectedColor()) / 2;
+        if (border)
+            color = (color + Color.black) / 2;
             return color;
     }
 
@@ -114,10 +117,11 @@ public class  Pixel {
         else
             color = new Color32(145, 187, 150, 255);
 
-        if (drewOn == true)
-            return (color + GetSelectedColor()) / 2;
-        else
-            return color;
+        if (drewOn)
+            color = (color + GetSelectedColor()) / 2;
+        if (border)
+            color = (color + Color.black) / 2;
+        return color;
     }
 
     public Color GetEthnicityColor() {
@@ -136,10 +140,11 @@ public class  Pixel {
         else
             color = Color.white;
 
-        if (drewOn == true)
-            return (color + GetSelectedColor()) / 2;
-        else
-            return color;
+        if(drewOn)
+            color = (color + GetSelectedColor()) / 2;
+        if (border)
+            color = (color + Color.black) / 2;
+        return color;
     }
 
     public Color GetSelectedColor() {

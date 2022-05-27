@@ -126,9 +126,8 @@ public class DisplayMap : MonoBehaviour {
                 if (pixel == null)
                     continue;
                 pixelData.drewOn = false;
-                pixel.GetComponent<SpriteRenderer>().color = pixelData.GetLandColor();
+                pixelData.border = false;
             }
         }
-        World.currentView = "LAND";
     }
 }
