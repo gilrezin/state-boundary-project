@@ -130,7 +130,7 @@ public class GameManager : MonoBehaviour {
     {
         int numberOfFactors = 10;
         double stability = 0;
-        stability += (1-isFractured)
+        stability += (1 - isFractured);
         stability += isProtruded;
         stability += oilBoundry;
         stability += goldBoundry;
