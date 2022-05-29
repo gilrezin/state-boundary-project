@@ -7,8 +7,8 @@ public class  Pixel {
 
     // Resources
     public double OilResourcePercentage;
-    public double GoldResorucePercentage = 0;
-    public double WoodResorucePercentage = 0;
+    public double GoldResourcePercentage = 0;
+    public double WoodResourcePercentage = 0;
     public bool drewOn = false;
     public bool border = false;
 
@@ -16,8 +16,8 @@ public class  Pixel {
     public Pixel(double ElevationPercentage, double OilResourcePercentage, double GoldResourcePercentage, double WoodResourcePercentage, string EthnicityID, int[] Coordinate) {
         this.ElevationPercentage = ElevationPercentage;
         this.OilResourcePercentage = OilResourcePercentage;
-        this.GoldResorucePercentage = GoldResourcePercentage;
-        this.WoodResorucePercentage = WoodResourcePercentage;
+        this.GoldResourcePercentage = GoldResourcePercentage;
+        this.WoodResourcePercentage = WoodResourcePercentage;
 
         this.EthinictyID = EthnicityID;
 
@@ -26,7 +26,7 @@ public class  Pixel {
     }
 
     public bool HasGold() {
-        return GoldResorucePercentage > .2;
+        return GoldResourcePercentage > .2;
     }
 
     public bool HasOil() {
@@ -34,7 +34,7 @@ public class  Pixel {
     }
 
     public bool HasWood() {
-        return WoodResorucePercentage > .2;
+        return WoodResourcePercentage > .2;
     }
 
 
@@ -83,13 +83,13 @@ public class  Pixel {
         Color color;
         
 
-        if (GoldResorucePercentage < .2)
+        if (GoldResourcePercentage < .2)
             color = Color.white;
-        else if (.2 <= GoldResorucePercentage && GoldResorucePercentage < .4)
+        else if (.2 <= GoldResourcePercentage && GoldResourcePercentage < .4)
             color = new Color32(78, 122, 36, 255);
-        else if (.4 <= GoldResorucePercentage && GoldResorucePercentage < .6)
+        else if (.4 <= GoldResourcePercentage && GoldResourcePercentage < .6)
             color = new Color32(96, 186, 100, 255);
-        else if (.6 <= GoldResorucePercentage && GoldResorucePercentage < .8)
+        else if (.6 <= GoldResourcePercentage && GoldResourcePercentage < .8)
             color = new Color32(96, 122, 100, 255);
         else
             color = new Color32(145, 187, 150, 255);
@@ -104,15 +104,15 @@ public class  Pixel {
     public Color GetWoodColor() {
         Color color;
 
-        if (WoodResorucePercentage < .2)
+        if (WoodResourcePercentage < .2)
             color =  Color.white;
-        else if (.2 <= WoodResorucePercentage && WoodResorucePercentage < .36)
+        else if (.2 <= WoodResourcePercentage && WoodResourcePercentage < .36)
             color = new Color32(78, 122, 36, 255);
-        else if (.36 <= WoodResorucePercentage && WoodResorucePercentage < .52)
+        else if (.36 <= WoodResourcePercentage && WoodResourcePercentage < .52)
             color = new Color32(96, 186, 100, 255);
-        else if (.52 <= WoodResorucePercentage && WoodResorucePercentage < .68)
+        else if (.52 <= WoodResourcePercentage && WoodResourcePercentage < .68)
             color = new Color32(96, 122, 100, 255);
-        else if (.68 <= WoodResorucePercentage && WoodResorucePercentage < .84)
+        else if (.68 <= WoodResourcePercentage && WoodResourcePercentage < .84)
             color = new Color32(96, 122, 100, 255);
         else
             color = new Color32(145, 187, 150, 255);
