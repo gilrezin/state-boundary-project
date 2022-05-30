@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour {
     public TextMeshProUGUI footer;
     private List<string> bodyTexts = new();
     private int stabilityGUIPageNumber = 0;
-    private List<string> ethnicities;
+    private List<string> ethnicities = new List<string>();
     // Start is called before the first frame update
     void Start() {
         Screen.SetResolution(1077, 606, false);
@@ -121,15 +121,15 @@ public class GameManager : MonoBehaviour {
         else if (World.currentView.Equals("GOLD"))
             displayMapScript.DisplayGoldColor();
 
-        DisplayStabilityGUI(IsFractured(), IsElongated(), IsProtruded(), IsPerforated(), OilBoundry(), GoldBoundry(), NumberOfEthnicities(), OilDensity(), GoldDensity(), WoodDensity(), CoastlinePercentage());
+        DisplayStabilityGUI(IsFractured(), IsElongated(), IsProtruded(), IsPerforated(), OilBoundry(), GoldBoundry(), NumberOfEthnicities(), OilDensity(), GoldDensity(), WoodDensity(), CoastlinePercentage(), EthnicityPercentages());
     }
 
 
 
 
-    public void DisplayStabilityGUI(double isFractured, bool isElongated, double isProtruded, double isPerforated, double oilBoundry, double goldBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity, double coastlinePercentage) // displays the stability GUI and updates the text
+    public void DisplayStabilityGUI(double isFractured, bool isElongated, double isProtruded, double isPerforated, double oilBoundry, double goldBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity, double coastlinePercentage, double ethnicityPercentage) // displays the stability GUI and updates the text
     {
-        int numberOfFactors = 11;
+        int numberOfFactors = 12;
         double stability = 0;
         stability += isFractured;
         //Debug.Log(stability);
@@ -167,7 +167,7 @@ public class GameManager : MonoBehaviour {
 
         stability /= numberOfFactors;
 
-        AssignBodyText(isFractured, isElongated, isProtruded, isPerforated, oilBoundry, goldBoundry, numberOfEthnicities, oilDensity, goldDensity, woodDensity, coastlinePercentage);
+        AssignBodyText(isFractured, isElongated, isProtruded, isPerforated, oilBoundry, goldBoundry, numberOfEthnicities, oilDensity, goldDensity, woodDensity, coastlinePercentage, ethnicityPercentage);
         stabilityGUIPageNumber = 0;
         header.text = "This country is " + Mathf.Round((float)(stability * 1000f)) / 10d + "% stable.";
         try {
@@ -189,7 +189,7 @@ public class GameManager : MonoBehaviour {
 
 
 
-    public void AssignBodyText(double isFractured, bool isElongated, double isProtruded, double isPerforated, double oilBoundry, double goldBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity, double coastlinePercentage) {
+    public void AssignBodyText(double isFractured, bool isElongated, double isProtruded, double isPerforated, double oilBoundry, double goldBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity, double coastlinePercentage, double ethnicityPercentage) {
         bodyTexts.Clear();
         if (isFractured < .9) // check if state is fractured
             bodyTexts.Add("Fragmented states create isolation from the mainland, sometimes leading to autonomy or devolution. Also, it is more difficult to evenly spread resources to all parts of the state. Isolation and differences add up as centrifugal forces and work to divide the states. (" + Mathf.Round((float)((1d - isFractured) * 1000d)) / 10d + "% of your country is fragmented)");
@@ -668,20 +668,7 @@ public class GameManager : MonoBehaviour {
 
 
     public int NumberOfEthnicities() {
-        List<string> ethincities = new();
-        foreach (string pixel in selectedPixels) {
-            int x = int.Parse(pixel[..pixel.IndexOf(", ")]);
-            int y = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
-            if (ethincities.Contains(World.world[x, y].EthinictyID)) {
-                continue;
-            }
-            ethincities.Add(World.world[x, y].EthinictyID);
-        }
-
-        return ethincities.Count;
-    }
-
-        ethnicities = new();
+        List<string> ethnicities = new();
         foreach (string pixel in selectedPixels) {
             int x = int.Parse(pixel[..pixel.IndexOf(", ")]);
             int y = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
@@ -690,12 +677,13 @@ public class GameManager : MonoBehaviour {
             }
             ethnicities.Add(World.world[x, y].EthinictyID);
         }
-        
+
         return ethnicities.Count;
     }
 
     public double EthnicityPercentages()
     {
+        //Debug.Log(NumberOfEthnicities());
         List<int> ethnicityPercentages = new();
         int numberOfMinorityEthnicities = 0;
         for (int i = 0; i < 5; i++) // for every ethnicity, add up their percentage
