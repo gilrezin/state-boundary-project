@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour {
     public TextMeshProUGUI footer;
     private List<string> bodyTexts = new();
     private int stabilityGUIPageNumber = 0;
+    private List<string> ethnicities;
     // Start is called before the first frame update
     void Start() {
         Screen.SetResolution(1077, 606, false);
@@ -161,6 +162,7 @@ public class GameManager : MonoBehaviour {
         else
             stability += 1;
         Debug.Log(stability);
+        stability += ethnicityPercentage;
 
 
         stability /= numberOfFactors;
@@ -679,6 +681,37 @@ public class GameManager : MonoBehaviour {
         return ethincities.Count;
     }
 
+        ethnicities = new();
+        foreach (string pixel in selectedPixels) {
+            int x = int.Parse(pixel[..pixel.IndexOf(", ")]);
+            int y = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
+            if (ethnicities.Contains(World.world[x, y].EthinictyID)) {
+                continue;
+            }
+            ethnicities.Add(World.world[x, y].EthinictyID);
+        }
+        
+        return ethnicities.Count;
+    }
+
+    public double EthnicityPercentages()
+    {
+        List<int> ethnicityPercentages = new();
+        int numberOfMinorityEthnicities = 0;
+        for (int i = 0; i < 5; i++) // for every ethnicity, add up their percentage
+            ethnicityPercentages.Add((ethnicities.FindAll(element => element.StartsWith((char) (i + 65)))).Count);
+        foreach (int e in ethnicityPercentages)
+        {
+            if (e > 10 && e < 50)
+                numberOfMinorityEthnicities++;
+        }
+        return 1 - (numberOfMinorityEthnicities * 0.2);
+    }
+
+    //public double Irredentism()
+    //{
+        
+    //}
 
 
 
