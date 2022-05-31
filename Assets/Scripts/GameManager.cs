@@ -146,10 +146,10 @@ public class GameManager : MonoBehaviour {
             stability += 1;
 
 
-        if ((goldDensity + woodDensity + woodDensity) / 2 > 2)
+        if ((goldDensity + oilDensity + woodDensity) / 2 > 2)
             stability += 2;
         else
-            stability += (goldDensity + woodDensity + woodDensity) / 2;
+            stability += (goldDensity + oilDensity + woodDensity) / 2;
 
 
 
