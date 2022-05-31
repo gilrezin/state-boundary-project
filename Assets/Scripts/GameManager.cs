@@ -606,8 +606,7 @@ public class GameManager : MonoBehaviour {
                 abnormalYValues++;
             }
         }
-        //Debug.Log("Abnormal y-values: " + abnormalYValues + "\ty-values: " + yValueChart.Count + "\tFraction: " + (double) abnormalYValues / yValueChart.Count); // debug
-
+        
         foreach (KeyValuePair<int, int> entry in xValueChart) // find the number of below average y-value occurences by row (panhandles)
         {
             if (entry.Value < averageXValue / 1.5) {
