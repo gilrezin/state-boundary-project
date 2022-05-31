@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour {
     public TextMeshProUGUI footer;
     private List<string> bodyTexts = new();
     private int stabilityGUIPageNumber = 0;
-    private List<string> ethnicities = new List<string>();
+    private List<string> ethnicities = new();
     // Start is called before the first frame update
     void Start() {
         Screen.SetResolution(1077, 606, false);
@@ -129,40 +129,28 @@ public class GameManager : MonoBehaviour {
 
     public void DisplayStabilityGUI(double isFractured, bool isElongated, double isProtruded, double isPerforated, double oilBoundry, double goldBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity, double coastlinePercentage, double ethnicityPercentage) // displays the stability GUI and updates the text
     {
-        int numberOfFactors = 12;
+        int numberOfFactors = 11;
         double stability = 0;
         stability += isFractured;
-        //Debug.Log(stability);
         stability += 1-isProtruded;
-        //Debug.Log(stability);
         stability += 1-isPerforated;
         stability += 1-oilBoundry;
-        //Debug.Log(stability);
         stability += 1-goldBoundry;
-        //Debug.Log(stability);
-        if (oilDensity > 1)
-            stability += 1;
-        else stability += (oilDensity);
-        //Debug.Log(stability);
-        if (goldDensity > 1)
-            stability += 1;
-        else stability += (goldDensity);
-        //Debug.Log(stability);
-        if (woodDensity > 1)
-            stability += 1;
-        else stability += (woodDensity);
-        //Debug.Log(stability);
-        stability += 1-numberOfEthnicities * .2;
-        //Debug.Log(stability);
+        stability += 1-(numberOfEthnicities * .2);
         stability += coastlinePercentage;
-        //Debug.Log(stability);
-        if (isElongated) {
-            stability += .25;
-        }
-        else
-            stability += 1;
-        Debug.Log(stability);
         stability += ethnicityPercentage;
+
+        if (isElongated) 
+            stability += .25;
+        else 
+            stability += 1;
+
+
+        if ((goldDensity + woodDensity + woodDensity) / 2 > 2)
+            stability += 2;
+        else
+            stability += (goldDensity + woodDensity + woodDensity) / 2;
+
 
 
         stability /= numberOfFactors;
@@ -184,7 +172,7 @@ public class GameManager : MonoBehaviour {
         stabilityGUIBackground.SetActive(true);
         stabilityGUI.SetActive(true);
     }
-
+    
 
 
 
