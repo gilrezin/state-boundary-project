@@ -131,43 +131,29 @@ public class GameManager : MonoBehaviour {
 
     public void DisplayStabilityGUI(double isFractured, bool isElongated, double isProtruded, double isPerforated, double oilBoundry, double goldBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity, double coastlinePercentage, double ethnicityPercentage) // displays the stability GUI and updates the text
     {
-        int numberOfFactors = 12;
+        int numberOfFactors = 11;
         double stability = 0;
         stability += isFractured;
-        //Debug.Log(stability);
         stability += 1-isProtruded;
-        //Debug.Log(stability);
         stability += 1-isPerforated;
         stability += 1-oilBoundry;
-        //Debug.Log(stability);
         stability += 1-goldBoundry;
-        //Debug.Log(stability);
-        if (oilDensity > 1)
-            stability += 1;
-        else stability += (oilDensity);
-        //Debug.Log(stability);
-        if (goldDensity > 1)
-            stability += 1;
-        else stability += (goldDensity);
-        //Debug.Log(stability);
-        if (woodDensity > 1)
-            stability += 1;
-        else stability += (woodDensity);
-        //Debug.Log(stability);
-        stability += 1-numberOfEthnicities * .2;
-        //Debug.Log(stability);
+        stability += 1-(numberOfEthnicities * .2);
         stability += coastlinePercentage;
-        //Debug.Log(stability);
-        if (isElongated) {
+        stability += ethnicityPercentage;
+
+        if (isElongated) 
             stability += .25;
-        }
-        /*else
+        else 
             stability += 1;
-        Debug.Log(stability);
-        stability += ethnicityPercentage;*/
+
+
+        if ((goldDensity + oilDensity + woodDensity) / 2 > 2)
+            stability += 2;
+        else
+            stability += (goldDensity + oilDensity + woodDensity) / 2;
 
         Debug.Log("Irredentism value: " + Irredentism());
-
 
         stability /= numberOfFactors;
 
@@ -188,7 +174,7 @@ public class GameManager : MonoBehaviour {
         stabilityGUIBackground.SetActive(true);
         stabilityGUI.SetActive(true);
     }
-
+    
 
 
 
@@ -622,8 +608,7 @@ public class GameManager : MonoBehaviour {
                 abnormalYValues++;
             }
         }
-        //Debug.Log("Abnormal y-values: " + abnormalYValues + "\ty-values: " + yValueChart.Count + "\tFraction: " + (double) abnormalYValues / yValueChart.Count); // debug
-
+        
         foreach (KeyValuePair<int, int> entry in xValueChart) // find the number of below average y-value occurences by row (panhandles)
         {
             if (entry.Value < averageXValue / 1.5) {
