@@ -123,15 +123,15 @@ public class GameManager : MonoBehaviour {
         else if (World.currentView.Equals("GOLD"))
             displayMapScript.DisplayGoldColor();
 
-        DisplayStabilityGUI(IsFractured(), IsElongated(), IsProtruded(), IsPerforated(), OilBoundry(), GoldBoundry(), NumberOfEthnicities(), OilDensity(), GoldDensity(), WoodDensity(), CoastlinePercentage(), EthnicityPercentages());
+        DisplayStabilityGUI(IsFractured(), IsElongated(), IsProtruded(), IsPerforated(), OilBoundry(), GoldBoundry(), NumberOfEthnicities(), OilDensity(), GoldDensity(), WoodDensity(), CoastlinePercentage(), EthnicityPercentages(), Irredentism());
     }
 
 
 
 
-    public void DisplayStabilityGUI(double isFractured, bool isElongated, double isProtruded, double isPerforated, double oilBoundry, double goldBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity, double coastlinePercentage, double ethnicityPercentage) // displays the stability GUI and updates the text
+    public void DisplayStabilityGUI(double isFractured, bool isElongated, double isProtruded, double isPerforated, double oilBoundry, double goldBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity, double coastlinePercentage, double ethnicityPercentage, double irredentism) // displays the stability GUI and updates the text
     {
-        int numberOfFactors = 11;
+        int numberOfFactors = 12;
         double stability = 0;
         stability += isFractured;
         stability += 1-isProtruded;
@@ -141,6 +141,7 @@ public class GameManager : MonoBehaviour {
         stability += 1-(numberOfEthnicities * .2);
         stability += coastlinePercentage;
         stability += ethnicityPercentage;
+        stability += 1-irredentism;
 
         if (isElongated) 
             stability += .25;
@@ -153,11 +154,9 @@ public class GameManager : MonoBehaviour {
         else
             stability += (goldDensity + oilDensity + woodDensity) / 2;
 
-        Debug.Log("Irredentism value: " + Irredentism());
-
         stability /= numberOfFactors;
 
-        AssignBodyText(isFractured, isElongated, isProtruded, isPerforated, oilBoundry, goldBoundry, numberOfEthnicities, oilDensity, goldDensity, woodDensity, coastlinePercentage, ethnicityPercentage);
+        AssignBodyText(isFractured, isElongated, isProtruded, isPerforated, oilBoundry, goldBoundry, numberOfEthnicities, oilDensity, goldDensity, woodDensity, coastlinePercentage, ethnicityPercentage, irredentism);
         stabilityGUIPageNumber = 0;
         header.text = "This country is " + Mathf.Round((float)(stability * 1000f)) / 10d + "% stable.";
         try {
@@ -179,7 +178,7 @@ public class GameManager : MonoBehaviour {
 
 
 
-    public void AssignBodyText(double isFractured, bool isElongated, double isProtruded, double isPerforated, double oilBoundry, double goldBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity, double coastlinePercentage, double ethnicityPercentage) {
+    public void AssignBodyText(double isFractured, bool isElongated, double isProtruded, double isPerforated, double oilBoundry, double goldBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity, double coastlinePercentage, double ethnicityPercentage, double irredentism) {
         bodyTexts.Clear();
         if (isFractured < .9) // check if state is fractured
             bodyTexts.Add("Fragmented states create isolation from the mainland, sometimes leading to autonomy or devolution. Also, it is more difficult to evenly spread resources to all parts of the state. Isolation and differences add up as centrifugal forces and work to divide the states. (" + Mathf.Round((float)((1d - isFractured) * 1000d)) / 10d + "% of your country is fragmented)");
@@ -203,6 +202,8 @@ public class GameManager : MonoBehaviour {
             bodyTexts.Add("More than 3 nationalities support the growth of centrifugal forces. The cultural differences create division and ideas of self determination in one of those groups can lead to war to be granted autonomy. Isolation and differences add up as centrifugal forces and work to divide the states. (There are " + numberOfEthnicities + " different nationalities in your country)");
         if (coastlinePercentage < .1)
             bodyTexts.Add("Your country does not have much coastline. Lack of coastline means limited access to world trade. (" + Mathf.Round((float)(coastlinePercentage * 1000f)) / 10d + "% of your coastline has water access)");
+        if (irredentism > 0)
+            bodyTexts.Add("Minority nationality crosses national border. The minority nationality may feel a right to the land where its majority ethnic population lives. Irredentism can lead to war and conflict. (" + Mathf.Round((float)(irredentism/3d * 1000f)) / 10d + "% of the country contains a minority nationality)");
     }
 
 
@@ -717,7 +718,7 @@ public class GameManager : MonoBehaviour {
             int baseXCoordinate = int.Parse(s[..s.IndexOf(", ")]);
             int baseYCoordinate = int.Parse(s[(s.IndexOf(", ") + 1)..]);
             double percentageOfEthnicityInCountry = (double) ethnicitiesCount[char.Parse(World.world[baseXCoordinate, baseYCoordinate].EthinictyID) - 97] / ethnicityTotal;
-            Debug.Log(percentageOfEthnicityInCountry);
+            //Debug.Log(percentageOfEthnicityInCountry);
             try {
                 adjustedXCoordinate = baseXCoordinate - 1; // check a neighboring pixel
                 /*Debug.Log("checking coordinate " + adjustedXCoordinate + ", " + baseYCoordinate);
