@@ -131,7 +131,7 @@ public class GameManager : MonoBehaviour {
 
     public void DisplayStabilityGUI(double isFractured, bool isElongated, double isProtruded, double isPerforated, double oilBoundry, double goldBoundry, int numberOfEthnicities, double oilDensity, double goldDensity, double woodDensity, double coastlinePercentage, double ethnicityPercentage, double irredentism) // displays the stability GUI and updates the text
     {
-        int numberOfFactors = 12;
+        int numberOfFactors = 13;
         double stability = 0;
         stability += isFractured;
         stability += 1-isProtruded;
@@ -203,7 +203,7 @@ public class GameManager : MonoBehaviour {
         if (coastlinePercentage < .1)
             bodyTexts.Add("Your country does not have much coastline. Lack of coastline means limited access to world trade. (" + Mathf.Round((float)(coastlinePercentage * 1000f)) / 10d + "% of your coastline has water access)");
         if (irredentism > 0)
-            bodyTexts.Add("Minority nationality crosses national border. The minority nationality may feel a right to the land where its majority ethnic population lives. Irredentism can lead to war and conflict. (" + Mathf.Round((float)(irredentism/3d * 1000f)) / 10d + "% of the country contains a minority nationality)");
+            bodyTexts.Add("Minority nationality crosses national border. The minority nationality may feel a right to the land where its majority ethnic population lives. Irredentism can lead to war and conflict. (" + Mathf.Round((float)(irredentism * 1000f)) / 10d + "% of the country contains a minority nationality)");
     }
 
 
@@ -713,6 +713,9 @@ public class GameManager : MonoBehaviour {
         int adjustedXCoordinate;
         int adjustedYCoordinate;
         int irredentismPixels = 0;
+        List<bool> irredentismGroups = new() {false, false, false, false, false};
+        /*foreach (int i in ethnicitiesCount)
+            Debug.Log(i);*/
         foreach (string s in borders) {
             // search for this pixel's immediate neighbors. Add them to the list if they are not a duplicate
             int baseXCoordinate = int.Parse(s[..s.IndexOf(", ")]);
@@ -726,34 +729,40 @@ public class GameManager : MonoBehaviour {
                 Debug.Log(char.Parse(World.world[baseXCoordinate, baseYCoordinate].EthinictyID) - 97);*/
                 if (!selectedPixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate)) // if the neighboring pixel is not a part of the country and the ethnicity is a minority
                    
-                    if (World.world[adjustedXCoordinate, baseYCoordinate].EthinictyID == World.world[baseXCoordinate, baseYCoordinate].EthinictyID && percentageOfEthnicityInCountry > 0 && percentageOfEthnicityInCountry < 0.5) // and the pixel has the same ethnicity as the bordering pixel
-                        irredentismPixels++;
+                    if (World.world[adjustedXCoordinate, baseYCoordinate].EthinictyID == World.world[baseXCoordinate, baseYCoordinate].EthinictyID && percentageOfEthnicityInCountry > 0.1 && percentageOfEthnicityInCountry < 0.5) // and the pixel has the same ethnicity as the bordering pixel
+                        irredentismGroups[char.Parse(World.world[baseXCoordinate, baseYCoordinate].EthinictyID) - 97] = true; // make irredentism true for that ethnicity
             }
             catch { }
             try {
                 adjustedXCoordinate = baseXCoordinate + 1;
                 if (!selectedPixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
-                    if (World.world[adjustedXCoordinate, baseYCoordinate].EthinictyID == World.world[baseXCoordinate, baseYCoordinate].EthinictyID && percentageOfEthnicityInCountry > 0 && percentageOfEthnicityInCountry < 0.5) {
-                        irredentismPixels++;
+                    if (World.world[adjustedXCoordinate, baseYCoordinate].EthinictyID == World.world[baseXCoordinate, baseYCoordinate].EthinictyID && percentageOfEthnicityInCountry > 0.1 && percentageOfEthnicityInCountry < 0.5) {
+                        irredentismGroups[char.Parse(World.world[baseXCoordinate, baseYCoordinate].EthinictyID) - 97] = true;
                     }
             }
             catch { }
             try {
                 adjustedYCoordinate = baseYCoordinate - 1;
                 if (!selectedPixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
-                    if (World.world[baseXCoordinate, adjustedYCoordinate].EthinictyID == World.world[baseXCoordinate, baseYCoordinate].EthinictyID && percentageOfEthnicityInCountry > 0 && percentageOfEthnicityInCountry < 0.5)
-                        irredentismPixels++;
+                    if (World.world[baseXCoordinate, adjustedYCoordinate].EthinictyID == World.world[baseXCoordinate, baseYCoordinate].EthinictyID && percentageOfEthnicityInCountry > 0.1 && percentageOfEthnicityInCountry < 0.5)
+                        irredentismGroups[char.Parse(World.world[baseXCoordinate, baseYCoordinate].EthinictyID) - 97] = true;
             }
             catch { }
             try {
                 adjustedYCoordinate = baseYCoordinate + 1;
                 if (!selectedPixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
-                    if (World.world[baseXCoordinate, adjustedYCoordinate].EthinictyID == World.world[baseXCoordinate, baseYCoordinate].EthinictyID && percentageOfEthnicityInCountry > 0 && percentageOfEthnicityInCountry < 0.5)
-                        irredentismPixels++;
+                    if (World.world[baseXCoordinate, adjustedYCoordinate].EthinictyID == World.world[baseXCoordinate, baseYCoordinate].EthinictyID && percentageOfEthnicityInCountry > 0.1 && percentageOfEthnicityInCountry < 0.5)
+                        irredentismGroups[char.Parse(World.world[baseXCoordinate, baseYCoordinate].EthinictyID) - 97] = true;
             }
             catch { }
         }
-        return (double)((double)irredentismPixels) / ((double)borders.Count);
+        for (int i = 0; i < ethnicitiesCount.Count; i++)
+        {
+            if (irredentismGroups[i])
+                irredentismPixels += (ethnicitiesCount[i]); // find the percentage for each minority ethnicity within the country
+        }
+        //Debug.Log("Irredentism pixels: " + irredentismPixels + " | Selected pixels: " + selectedPixels.Count);
+        return ((double)irredentismPixels) / ((double)selectedPixels.Count);
     }
 
 
