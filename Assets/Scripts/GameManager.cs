@@ -17,7 +17,9 @@ public class GameManager : MonoBehaviour {
     public TextMeshProUGUI footer;
     private List<string> bodyTexts = new();
     private int stabilityGUIPageNumber = 0;
-    private List<string> ethnicities = new List<string>();
+    private List<int> ethnicityPercentages;
+    List<int> ethnicitiesCount = new();
+    int ethnicityTotal;
     // Start is called before the first frame update
     void Start() {
         Screen.SetResolution(1077, 606, false);
@@ -159,10 +161,12 @@ public class GameManager : MonoBehaviour {
         if (isElongated) {
             stability += .25;
         }
-        else
+        /*else
             stability += 1;
         Debug.Log(stability);
-        stability += ethnicityPercentage;
+        stability += ethnicityPercentage;*/
+
+        Debug.Log("Irredentism value: " + Irredentism());
 
 
         stability /= numberOfFactors;
@@ -195,7 +199,7 @@ public class GameManager : MonoBehaviour {
             bodyTexts.Add("Fragmented states create isolation from the mainland, sometimes leading to autonomy or devolution. Also, it is more difficult to evenly spread resources to all parts of the state. Isolation and differences add up as centrifugal forces and work to divide the states. (" + Mathf.Round((float)((1d - isFractured) * 1000d)) / 10d + "% of your country is fragmented)");
         if (isElongated) // check if state is elongated
             bodyTexts.Add("Elongated states will separate one side from another creating isolation of the two groups. Additionally from a military perspective, long state borders are exposed more and require military enforcement across borders. Isolation and differences add up as centrifugal forces and work to divide the states.");
-        if (isProtruded > 0.25) // check if state is protruded
+        if (isProtruded > 0.40) // check if state is protruded
             bodyTexts.Add("A protrusion can cause unnecessary disputes over its territory. Additionally smooth communication may be disturbed. This can isolate the mainland and the protrusion. Isolation and differences add up as centrifugal forces and work to divide the states. (" + Mathf.Round((float)(isProtruded * 1000f)) / 10d + "% of your country is protruded)");
         if (isPerforated > 0) // check if state is perforated
             bodyTexts.Add("Perforated states have a break in their communication and transportation lines. The state would have to cooperate and manage the imports, exports and foreigh businesses of the state it's perforating. (Perforated country is " + Mathf.Round((float)(isPerforated * 1000f)) / 10d + "% the size of your country)");
@@ -212,7 +216,7 @@ public class GameManager : MonoBehaviour {
         if (numberOfEthnicities > 2)
             bodyTexts.Add("More than 3 nationalities support the growth of centrifugal forces. The cultural differences create division and ideas of self determination in one of those groups can lead to war to be granted autonomy. Isolation and differences add up as centrifugal forces and work to divide the states. (There are " + numberOfEthnicities + " different nationalities in your country)");
         if (coastlinePercentage < .1)
-            bodyTexts.Add("Your country does not have much coastline. Lack of coastline means limited access to world trade, and an inability to have a successful navy. (" + Mathf.Round((float)(coastlinePercentage * 1000f)) / 10d + "% of your coastline has water access)");
+            bodyTexts.Add("Your country does not have much coastline. Lack of coastline means limited access to world trade. (" + Mathf.Round((float)(coastlinePercentage * 1000f)) / 10d + "% of your coastline has water access)");
     }
 
 
@@ -639,7 +643,7 @@ public class GameManager : MonoBehaviour {
         List<string> perforatedBorders = borders;
         perforatedBorders.Sort();
         // go through every pixel in borders and find a pair of x-coordinates
-        for (int i = 0; i < perforatedBorders.Count; i += 2)
+        for (int i = 0; i < perforatedBorders.Count; i++)
         {
             // for every pair that is found, find the difference in their y-values
             try
@@ -683,23 +687,88 @@ public class GameManager : MonoBehaviour {
 
     public double EthnicityPercentages()
     {
-        //Debug.Log(NumberOfEthnicities());
-        List<int> ethnicityPercentages = new();
-        int numberOfMinorityEthnicities = 0;
-        for (int i = 0; i < 5; i++) // for every ethnicity, add up their percentage
-            ethnicityPercentages.Add((ethnicities.FindAll(element => element.StartsWith((char) (i + 65)))).Count);
-        foreach (int e in ethnicityPercentages)
+        List<string> ethnicities = new(); // use ethnicity algorithm but count every ethnicity one by one
+        foreach (string pixel in selectedPixels) {
+            int x = int.Parse(pixel[..pixel.IndexOf(", ")]);
+            int y = int.Parse(pixel[(pixel.IndexOf(", ") + 1)..]);
+            ethnicities.Add(World.world[x, y].EthinictyID);
+        }
+
+        ethnicitiesCount = new() {0,0,0,0,0};
+
+        foreach (string e in ethnicities) // sort the ethnicities
         {
-            if (e > 10 && e < 50)
+            if (e.StartsWith("a"))
+                ethnicitiesCount[0]++;
+            else if (e.StartsWith("b"))
+                ethnicitiesCount[1]++;
+            else if (e.StartsWith("c"))
+                ethnicitiesCount[2]++;
+            else if (e.StartsWith("d"))
+                ethnicitiesCount[3]++;
+            else if (e.StartsWith("e"))
+                ethnicitiesCount[4]++;
+        }
+
+        ethnicityTotal = ethnicitiesCount.Sum(); // sum the ethnicities
+        int numberOfMinorityEthnicities = 0;
+
+        foreach(int i in ethnicitiesCount)
+        {
+            if ((double) i / ethnicityTotal > 0.05 && (double) i / ethnicityTotal < 0.5) // find the minority ethnicities
                 numberOfMinorityEthnicities++;
         }
         return 1 - (numberOfMinorityEthnicities * 0.2);
     }
 
-    //public double Irredentism()
-    //{
-        
-    //}
+    public double Irredentism() // determines if a minority ethnicity crosses a national border
+    {
+        //get the borders
+        int adjustedXCoordinate;
+        int adjustedYCoordinate;
+        int irredentismPixels = 0;
+        foreach (string s in borders) {
+            // search for this pixel's immediate neighbors. Add them to the list if they are not a duplicate
+            int baseXCoordinate = int.Parse(s[..s.IndexOf(", ")]);
+            int baseYCoordinate = int.Parse(s[(s.IndexOf(", ") + 1)..]);
+            double percentageOfEthnicityInCountry = (double) ethnicitiesCount[char.Parse(World.world[baseXCoordinate, baseYCoordinate].EthinictyID) - 97] / ethnicityTotal;
+            Debug.Log(percentageOfEthnicityInCountry);
+            try {
+                adjustedXCoordinate = baseXCoordinate - 1; // check a neighboring pixel
+                /*Debug.Log("checking coordinate " + adjustedXCoordinate + ", " + baseYCoordinate);
+                Debug.Log(ethnicityPercentages[(char.Parse(World.world[baseXCoordinate, baseYCoordinate].EthinictyID)) - 97]);
+                Debug.Log(char.Parse(World.world[baseXCoordinate, baseYCoordinate].EthinictyID) - 97);*/
+                if (!selectedPixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate)) // if the neighboring pixel is not a part of the country and the ethnicity is a minority
+                   
+                    if (World.world[adjustedXCoordinate, baseYCoordinate].EthinictyID == World.world[baseXCoordinate, baseYCoordinate].EthinictyID && percentageOfEthnicityInCountry > 0 && percentageOfEthnicityInCountry < 0.5) // and the pixel has the same ethnicity as the bordering pixel
+                        irredentismPixels++;
+            }
+            catch { }
+            try {
+                adjustedXCoordinate = baseXCoordinate + 1;
+                if (!selectedPixels.Contains(adjustedXCoordinate + ", " + baseYCoordinate))
+                    if (World.world[adjustedXCoordinate, baseYCoordinate].EthinictyID == World.world[baseXCoordinate, baseYCoordinate].EthinictyID && percentageOfEthnicityInCountry > 0 && percentageOfEthnicityInCountry < 0.5) {
+                        irredentismPixels++;
+                    }
+            }
+            catch { }
+            try {
+                adjustedYCoordinate = baseYCoordinate - 1;
+                if (!selectedPixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
+                    if (World.world[baseXCoordinate, adjustedYCoordinate].EthinictyID == World.world[baseXCoordinate, baseYCoordinate].EthinictyID && percentageOfEthnicityInCountry > 0 && percentageOfEthnicityInCountry < 0.5)
+                        irredentismPixels++;
+            }
+            catch { }
+            try {
+                adjustedYCoordinate = baseYCoordinate + 1;
+                if (!selectedPixels.Contains(baseXCoordinate + ", " + adjustedYCoordinate))
+                    if (World.world[baseXCoordinate, adjustedYCoordinate].EthinictyID == World.world[baseXCoordinate, baseYCoordinate].EthinictyID && percentageOfEthnicityInCountry > 0 && percentageOfEthnicityInCountry < 0.5)
+                        irredentismPixels++;
+            }
+            catch { }
+        }
+        return (double)((double)irredentismPixels) / ((double)borders.Count);
+    }
 
 
 
