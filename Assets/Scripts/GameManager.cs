@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour {
     int ethnicityTotal;
     // Start is called before the first frame update
     void Start() {
-        Screen.SetResolution(1077, 606, false);
+        //Screen.SetResolution(1077, 606, false);
     }
 
     // Update is called once per frame
