@@ -31,60 +31,67 @@ public class GameManager : MonoBehaviour {
 
         // when mouse position is down, search for the nearest pixels within a radius and color them in
         if (stabilityGUIBackground.activeSelf == false) {
-            if (Input.GetKey(KeyCode.Mouse0)) {
+            try {
+                if (Input.GetKey(KeyCode.Mouse0)) {
+                    Vector2 cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    Debug.Log(cameraPosition.x);
+                    if (cameraPosition.y > -3.7 && cameraPosition.y < 4.75 && cameraPosition.x > -8.7 && cameraPosition.y < 8.7)
+                    {
+                        int positionX = ToGridCoordinateX(cameraPosition.y);
+                        int positionY = ToGridCoordinateY(cameraPosition.x);
+                        for (int x = positionX - 2; x < positionX + 2; x++) {
+                            for (int y = positionY - 2; y < positionY + 2; y++) {
+                                try {
+                                    World.world[x, y].drewOn = true;
+                                    World.world[x, y].border = false;
+                                    if (World.currentView.Equals("LAND"))
+                                        GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
+                                    else if (World.currentView.Equals("NATION"))
+                                        GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetEthnicityColor();
+                                    else if (World.currentView.Equals("WOOD"))
+                                        GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetWoodColor();
+                                    else if (World.currentView.Equals("OIL"))
+                                        GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetOilColor();
+                                    else if (World.currentView.Equals("GOLD"))
+                                        GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor();
+                                }
+                                catch { }
 
-                Vector2 cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                int positionX = ToGridCoordinateX(cameraPosition.y);
-                int positionY = ToGridCoordinateY(cameraPosition.x);
-                for (int x = positionX - 2; x < positionX + 2; x++) {
-                    for (int y = positionY - 2; y < positionY + 2; y++) {
-                        try {
-                            World.world[x, y].drewOn = true;
-                            World.world[x, y].border = false;
-                            if (World.currentView.Equals("LAND"))
-                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
-                            else if (World.currentView.Equals("NATION"))
-                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetEthnicityColor();
-                            else if (World.currentView.Equals("WOOD"))
-                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetWoodColor();
-                            else if (World.currentView.Equals("OIL"))
-                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetOilColor();
-                            else if (World.currentView.Equals("GOLD"))
-                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor();
+                            }
                         }
-                        catch { }
-
                     }
                 }
-            }
 
-            else if (Input.GetKey(KeyCode.Mouse1)) {
-                Vector2 cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                int positionX = ToGridCoordinateX(cameraPosition.y);
-                int positionY = ToGridCoordinateY(cameraPosition.x);
-                for (int x = positionX - 2; x < positionX + 2; x++) {
-                    for (int y = positionY - 2; y < positionY + 2; y++) {
-                        try {
-                            World.world[x, y].drewOn = false;
-                            World.world[x, y].border = false;
-                            if (World.currentView.Equals("LAND"))
-                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
-                            else if (World.currentView.Equals("NATION"))
-                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetEthnicityColor();
-                            else if (World.currentView.Equals("WOOD"))
-                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetWoodColor();
-                            else if (World.currentView.Equals("OIL"))
-                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetOilColor();
-                            else if (World.currentView.Equals("GOLD"))
-                                GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor();
+                else if (Input.GetKey(KeyCode.Mouse1)) {
+                    Vector2 cameraPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    if (cameraPosition.y > -3.7 && cameraPosition.y < 4.75 && cameraPosition.x > -8.7 && cameraPosition.y < 8.7)
+                    {
+                        int positionX = ToGridCoordinateX(cameraPosition.y);
+                        int positionY = ToGridCoordinateY(cameraPosition.x);
+                        for (int x = positionX - 2; x < positionX + 2; x++) {
+                            for (int y = positionY - 2; y < positionY + 2; y++) {
+                                try {
+                                    World.world[x, y].drewOn = false;
+                                    World.world[x, y].border = false;
+                                    if (World.currentView.Equals("LAND"))
+                                        GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetLandColor();
+                                    else if (World.currentView.Equals("NATION"))
+                                        GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetEthnicityColor();
+                                    else if (World.currentView.Equals("WOOD"))
+                                        GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetWoodColor();
+                                    else if (World.currentView.Equals("OIL"))
+                                        GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetOilColor();
+                                    else if (World.currentView.Equals("GOLD"))
+                                        GameObject.Find(x + ", " + y).GetComponent<SpriteRenderer>().color = World.world[x, y].GetGoldColor();
+                                }
+                                catch { }
+
+                            }
                         }
-                        catch { }
-
                     }
                 }
-            }
-        }
-        else {
+            } catch { }
+        } else {
             if (Input.GetKeyDown(KeyCode.Space)) // go to next page in stability explanation
             {
                 try {
@@ -103,6 +110,7 @@ public class GameManager : MonoBehaviour {
                 }
             }
         }
+            
     }
 
 
@@ -782,6 +790,5 @@ public class GameManager : MonoBehaviour {
     private int ToGridCoordinateY(float input) {
         return (int)(Mathf.Abs((input + 8.733333f) * 15));
     }
-
 
 }
